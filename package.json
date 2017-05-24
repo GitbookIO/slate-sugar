@@ -1,0 +1,38 @@
+{
+  "name": "slate-sugar",
+  "description": "Set of Slate helpers to create nodes and documents.",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "repository": "git://github.com/GitbookIO/slate-sugar.git",
+  "main": "./dist/index.js",
+  "dependencies": {},
+  "peerDependencies": {},
+  "devDependencies": {
+    "ava": "^0.19.1",
+    "babel-cli": "^6.11.4",
+    "babel-core": "^6.11.4",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-register": "^6.24.1",
+    "eslint": "^3.1.1",
+    "eslint-config-gitbook": "1.4.0"
+  },
+  "scripts": {
+    "lint": "eslint --ext .js --ignore-pattern dist --fix .",
+    "test:watch": "ava --watch",
+    "test": "ava",
+    "prebuild": "npm run lint && npm run test",
+    "build": "babel src --out-dir dist --ignore __tests__",
+    "prepublish": "npm run build"
+  },
+  "ava": {
+    "require": "babel-register"
+  },
+  "keywords": [
+    "slate"
+  ],
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json"
+  ]
+}
