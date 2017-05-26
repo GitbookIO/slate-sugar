@@ -20,7 +20,7 @@
     "eslint-config-gitbook": "1.4.0"
   },
   "scripts": {
-    "lint": "eslint --ext .js --ignore-pattern dist --fix .",
+    "lint": "eslint --fix .",
     "pretest": "npm run lint",
     "test": "ava",
     "test:watch": "ava --watch",
