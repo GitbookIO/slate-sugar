@@ -6,7 +6,9 @@
   "repository": "git://github.com/GitbookIO/slate-sugar.git",
   "main": "./dist/index.js",
   "dependencies": {},
-  "peerDependencies": {},
+  "peerDependencies": {
+    "slate": "^0.20.1"
+  },
   "devDependencies": {
     "ava": "^0.19.1",
     "babel-cli": "^6.11.4",
