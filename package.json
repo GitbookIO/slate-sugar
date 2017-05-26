@@ -19,9 +19,10 @@
   },
   "scripts": {
     "lint": "eslint --ext .js --ignore-pattern dist --fix .",
-    "test:watch": "ava --watch",
+    "pretest": "npm run lint",
     "test": "ava",
-    "prebuild": "npm run lint && npm run test",
+    "test:watch": "ava --watch",
+    "prebuild": "npm run test",
     "build": "babel src --out-dir dist --ignore __tests__",
     "prepublish": "npm run build"
   },
