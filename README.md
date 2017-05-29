@@ -3,15 +3,7 @@
 [![NPM version](https://badge.fury.io/js/slate-sugar.svg)](http://badge.fury.io/js/slate-sugar)
 [![Build Status](https://travis-ci.org/GitbookIO/slate-sugar.png?branch=master)](https://travis-ci.org/GitbookIO/slate-sugar)
 
-Set of Slate helpers to create nodes and documents.
-
-## Install
-
-```
-yarn add slate-sugar
-```
-
-## Motivation
+> Set of Slate helpers to create nodes and documents.
 
 The purpose of slate-sugar is to make Slate nodes and documents creation:
 
@@ -20,16 +12,22 @@ The purpose of slate-sugar is to make Slate nodes and documents creation:
 
 Highly inspired by the hyper script convention[[1]](https://facebook.github.io/react/docs/react-without-jsx.html)[[2]](https://github.com/mlmorg/react-hyperscript).
 
-## Simple Usage
+## Install
+
+```
+yarn add slate-sugar
+```
+
+## Usage
 
 ```js
-import { document, block, inline, mark } from 'slate-sugar';
+import { document, block, inline, range } from 'slate-sugar';
 
 const heading   = block('heading');
 const section   = block('section');
 const paragraph = block('paragraph');
 const link      = inline('link');
-const bold      = mark('bold');
+const bold      = range('bold');
 
 document([
     section([
@@ -47,35 +45,102 @@ document([
 
 ## Documentation
 
-slate-sugar exports a set of helpers to create Slate nodes:
-
-* block
-* inline
-* mark
-
-They all accept a `type` (string) and return the following function:
+Types prefixed by `Slate.` are Slate's exported types, other types are defined below:
 
 ```
-(data?: Object, nodes?: string | number | (string | number | Object)[]) => Slate.Node
+type NodeIsh = string | number | Slate.Node | Object;
+type NodeFactory = (data?: Object, nodes?: NodeIsh | NodeIsh[]) => Slate.Node
+type Hyperscript = (type: string, props?: Object, children?: NodeIsh | NodeIsh[]): Slate.Document
 ```
 
-* **data**: node's data
-* **nodes**: node's children
+### `block(type: string): NodeFactory`
 
-Those arguments are both optional.
-When omitted, data is empty and nodes is an empty list of nodes.
+Returns a function to create a `Slate.Block`.
 
-Note that you can omit `data` and still pass `nodes`, for example:
+**Example:**
 
 ```js
 import { block } from 'slate-sugar';
 
-const paragraph = block('paragraph');
-paragraph('Some text.');
+const heading = block('heading');
+heading();// creates a Slate.Block of type 'heading'
 ```
 
-Here the paragraph will contain a single text child node.
+### `inline(type: string): NodeFactory`
+
+Returns a function to create a `Slate.Inline`.
+
+**Example:**
+
+```js
+import { inline } from 'slate-sugar';
+
+const link = inline('link');
+link();// creates a Slate.Inline of type 'link'
+```
+
+### `range(type: string): NodeFactory`
+
+Returns a function to apply marks to a range.
+
+**Example:**
+
+```js
+import { range } from 'slate-sugar';
+
+const bold = range('bold');
+bold('Bold content');// creates a Slate.Text with 'bold' applied to the range
+```
 
 ### `document(nodes: Slate.Node[]): Slate.Document`
 
 Creates a document containing `nodes`.
+
+**Example:**
+
+```js
+import { document, block } from 'slate-sugar';
+
+const paragraph = block('paragraph');
+
+document([
+    paragraph('This document contains a paragraph.'),
+]);
+```
+
+### `createHyperscript(...fns: NodeFactory[]): { [string]: Hyperscript }`
+
+Creates hyper script compatible functions and provide `Document` to be used as the root document.
+
+**Example:**
+
+```jsx harmony
+import { createHyperscript } from 'slate-sugar';
+
+const {
+    Document,
+    Heading,
+    Paragraph,
+    Link,
+    Bold
+} = createHyperscript({
+    block: [
+        'heading',
+        'paragraph'
+    ],
+    inline: [
+        'link'
+    ],
+    range: [
+        'bold'
+    ]
+});
+
+/* @jsx */
+const document = (
+    <Document>
+        <Heading>Super title</Heading>
+        <Paragraph>With a paragraph of text, a <Link href="/home">link</Link> and some <Bold>bold content</Bold>.</Paragraph>
+    </Document>
+);
+```
