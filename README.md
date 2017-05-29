@@ -50,6 +50,7 @@ Types prefixed by `Slate.` are Slate's exported types, other types are defined b
 ```
 type NodeIsh = string | number | Slate.Node | Object;
 type NodeFactory = (data?: Object, nodes?: NodeIsh | NodeIsh[]) => Slate.Node
+type Hyperscript = (type: string, props: Object, children: NodeIsh | NodeIsh[]): Slate.Document
 ```
 
 ### `block(type: string): NodeFactory`
@@ -130,25 +131,18 @@ createNode(null, { kind: 'document '}, [
 ]);
 ```
 
-### `createHyperscript({ blocks: string[], inlines: string[], marks: string[] }): { [string]: [string, Object, Slate.Node[]] }`
+### `createHyperscript({ blocks: string[], inlines: string[], marks: string[] }): Hyperscript`
 
-Creates a mapping of hyper script compatible list of arguments to be used in conjunction with `createNode()`.
-Also, provides `Document` to be used as the root document.
+Creates an hyper script compatible function.
 
 **Example:**
 
 ```jsx harmony
-/* @jsx createNode */
+/* @jsx h */
 
-import createNode, { createHyperscript } from 'slate-sugar';
+import { createHyperscript } from 'slate-sugar';
 
-const {
-    Document,
-    Heading,
-    Paragraph,
-    Link,
-    Bold
-} = createHyperscript({
+const h = createHyperscript({
     blocks: [
         'heading',
         'paragraph'
@@ -162,9 +156,9 @@ const {
 });
 
 const document = (
-    <Document>
-        <Heading>Super title</Heading>
-        <Paragraph>With a paragraph of text, a <Link href="/home">link</Link> and some <Bold>bold content</Bold>.</Paragraph>
-    </Document>
+    <document>
+        <heading>Super title</heading>
+        <paragraph>With a paragraph of text, a <link href="/home">link</link> and some <bold>bold content</bold>.</paragraph>
+    </document>
 );
 ```
