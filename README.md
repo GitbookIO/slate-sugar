@@ -18,13 +18,7 @@ The purpose of slate-sugar is to make Slate nodes and documents creation:
 * Painless by using smart defaults and inferring properties based on the input
 * Comprehensible by offering an API that look like a structured document
 
-To do so, it follows the hyper script convention as closely as possible:
-
-```
-(type, [props], [children]) => node
-```
-
-The reference implementation can be found in the [React documentation](https://facebook.github.io/react/docs/react-without-jsx.html) which also points to [react-hyperscript](https://github.com/mlmorg/react-hyperscript).
+Highly inspired by the hyper script convention[[1]](https://facebook.github.io/react/docs/react-without-jsx.html)[[2]](https://github.com/mlmorg/react-hyperscript).
 
 ## Simple Usage
 
