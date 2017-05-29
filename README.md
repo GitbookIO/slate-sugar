@@ -124,14 +124,14 @@ const {
     Link,
     Bold
 } = createHyperscript({
-    block: [
+    blocks: [
         'heading',
         'paragraph'
     ],
-    inline: [
+    inlines: [
         'link'
     ],
-    range: [
+    marks: [
         'bold'
     ]
 });
