@@ -114,7 +114,7 @@ Creates a `Slate.Node` from the provided definition.
 **Example:**
 
 ```js
-import { createNode } from 'slate-sugar';
+import createNode from 'slate-sugar';
 
 createNode(null, { kind: 'document '}, [
     createNode('section', { kind: 'block' }, [
@@ -140,7 +140,7 @@ Also, provides `Document` to be used as the root document.
 ```jsx harmony
 /* @jsx createNode */
 
-import { createHyperscript, createNode } from 'slate-sugar';
+import createNode, { createHyperscript } from 'slate-sugar';
 
 const {
     Document,
