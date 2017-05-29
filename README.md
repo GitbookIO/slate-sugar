@@ -115,7 +115,9 @@ Creates hyper script compatible functions and provide `Document` to be used as t
 **Example:**
 
 ```jsx harmony
-import { createHyperscript } from 'slate-sugar';
+/* @jsx createNode */
+
+import { createHyperscript, createNode } from 'slate-sugar';
 
 const {
     Document,
@@ -136,7 +138,6 @@ const {
     ]
 });
 
-/* @jsx */
 const document = (
     <Document>
         <Heading>Super title</Heading>
