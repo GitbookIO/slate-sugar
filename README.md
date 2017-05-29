@@ -50,7 +50,6 @@ Types prefixed by `Slate.` are Slate's exported types, other types are defined b
 ```
 type NodeIsh = string | number | Slate.Node | Object;
 type NodeFactory = (data?: Object, nodes?: NodeIsh | NodeIsh[]) => Slate.Node
-type Hyperscript = (type: string, props?: Object, children?: NodeIsh | NodeIsh[]): Slate.Document
 ```
 
 ### `block(type: string): NodeFactory`
@@ -108,9 +107,33 @@ document([
 ]);
 ```
 
-### `createHyperscript(...fns: NodeFactory[]): { [string]: Hyperscript }`
+### `createNode(type?: string, props?: Object, nodes?: NodeIsh | NodeIsh[]): Slate.Node`
 
-Creates hyper script compatible functions and provide `Document` to be used as the root document.
+Creates a `Slate.Node` from the provided definition.
+
+**Example:**
+
+```js
+import { createNode } from 'slate-sugar';
+
+createNode(null, { kind: 'document '}, [
+    createNode('section', { kind: 'block' }, [
+        createNode('heading', { kind: 'block' }, 'Super title'),
+        createNode('paragraph', { kind: 'block' }, 'This paragraph contains a text node.'),
+        createNode('paragraph', null, [
+            'And this one has a',
+            createNode('link', { kind: 'inline', data: { href: '/' } }, 'link'),
+            ' in it, along with ',
+            createNode({ kind: 'text', marks: ['bold'] }, 'some bold content.')
+        ])
+    ])
+]);
+```
+
+### `createHyperscript({ blocks: string[], inlines: string[], marks: string[] }): { [string]: [string, Object, Slate.Node[]] }`
+
+Creates a mapping of hyper script compatible list of arguments to be used in conjunction with `createNode()`.
+Also, provides `Document` to be used as the root document.
 
 **Example:**
 
