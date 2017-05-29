@@ -121,7 +121,7 @@ createNode(null, { kind: 'document '}, [
     createNode('section', { kind: 'block' }, [
         createNode('heading', { kind: 'block' }, 'Super title'),
         createNode('paragraph', { kind: 'block' }, 'This paragraph contains a text node.'),
-        createNode('paragraph', null, [
+        createNode('paragraph', { kind: 'block' }, [
             'And this one has a',
             createNode('link', { kind: 'inline', data: { href: '/' } }, 'link'),
             ' in it, along with ',
