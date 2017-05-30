@@ -1,5 +1,7 @@
+/* @jsx h */
+
 import test from 'ava';
-import { Document, Block, Inline, Text } from 'slate';
+import Slate, { Document, Block, Inline, Text } from 'slate';
 import createHyperscript from '../createHyperscript';
 
 test('should return a function', (t) => {
@@ -79,7 +81,7 @@ test('should add child nodes', (t) => {
         blocks: ['section', 'paragraph']
     });
     const paragraph = h('paragraph');
-    const actual = h('section', null, [paragraph]).nodes.first();
+    const actual = h('section', null, paragraph).nodes.first();
     const expected = paragraph;
 
     t.is(actual, expected);
@@ -104,4 +106,83 @@ test('should add marks to the text', (t) => {
     const expected = true;
 
     t.is(actual, expected);
+});
+
+test.failing('should create a document from jsx', (t) => {
+    /* eslint-disable no-unused-vars, react/react-in-jsx-scope */
+    const h = createHyperscript({
+        blocks: [
+            'heading',
+            'paragraph'
+        ],
+        inlines: [
+            'link'
+        ],
+        marks: [
+            'bold'
+        ]
+    });
+    const actual = Slate.Raw.serializeDocument((
+        <document>
+            <heading>Super title</heading>
+            <paragraph>With a paragraph of text, a <link href="/home">link</link> and some <bold>bold content</bold>.</paragraph>
+        </document>
+    ), { terse: true });
+    const expected = {
+        nodes: [
+            {
+                kind: 'block',
+                type: 'heading',
+                nodes: [
+                    {
+                        kind: 'text',
+                        text: 'Super title'
+                    }
+                ]
+            },
+            {
+                kind: 'block',
+                type: 'paragraph',
+                nodes: [
+                    {
+                        kind: 'text',
+                        text: 'With a paragraph of text, a '
+                    },
+                    {
+                        kind: 'inline',
+                        type: 'link',
+                        data: { href: '/home' },
+                        nodes: [
+                            {
+                                kind: 'text',
+                                text: 'link'
+                            }
+                        ]
+                    },
+                    {
+                        kind: 'text',
+                        ranges: [
+                            {
+                                kind: 'text',
+                                text: ' and some '
+                            },
+                            {
+                                kind: 'text',
+                                text: 'bold content',
+                                marks: [
+                                    'bold'
+                                ]
+                            },
+                            {
+                                kind: 'text',
+                                text: '.'
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    };
+
+    t.deepEqual(actual, expected);
 });

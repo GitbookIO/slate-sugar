@@ -23,7 +23,7 @@ function createHyperscript({ blocks = [], inlines = [], marks = [] } = {}) {
             )
         )
     );
-    return (type, data, nodes) => {
+    return (type, data, ...nodes) => {
         if (fns[type] == null) {
             throw new Error(`Cannot create node from unknown type "${type}"`);
         }
