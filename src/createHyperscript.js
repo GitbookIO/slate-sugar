@@ -8,9 +8,21 @@ function toMap(types, shorthand, initialMap) {
 }
 
 function createHyperscript({ blocks = [], inlines = [], marks = [] } = {}) {
-    const fns = toMap(marks, range, toMap(inlines, inline, toMap(blocks, block, {
-        document: (data, nodes) => document(nodes)
-    })));
+    const fns = toMap(
+        marks,
+        range,
+        toMap(
+            inlines,
+            inline,
+            toMap(
+                blocks,
+                block,
+                {
+                    document: (data, nodes) => document(nodes)
+                }
+            )
+        )
+    );
     return (type, data, nodes) => {
         if (fns[type] == null) {
             throw new Error(`Cannot create node from unknown type "${type}"`);
