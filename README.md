@@ -48,9 +48,10 @@ document([
 Types prefixed by `Slate.` are Slate's exported types, other types are defined below:
 
 ```
-type NodeIsh = string | number | Slate.Node | Object;
-type NodeFactory = (data?: Object, nodes?: NodeIsh | NodeIsh[]) => Slate.Node
-type Hyperscript = (type: string, props: Object, children: NodeIsh | NodeIsh[]): Slate.Document
+type NodeIsh     = string | number | Slate.Node;
+type Nodes       = NodeIsh | NodeIsh[]
+type NodeFactory = (data?: Object, nodes?: Nodes) => Slate.Node
+type Hyperscript = (type: string, props: Object, children: Nodes): Slate.Node
 ```
 
 ### `block(type: string): NodeFactory`
@@ -63,7 +64,11 @@ Returns a function to create a `Slate.Block`.
 import { block } from 'slate-sugar';
 
 const heading = block('heading');
-heading();// creates a Slate.Block of type 'heading'
+
+// creates a Slate.Block of type 'heading'
+// with data { id: 'super-heading' }
+// and a single child text node 'super heading'
+heading({ id: 'super-heading' }, 'super heading');
 ```
 
 ### `inline(type: string): NodeFactory`
@@ -76,7 +81,11 @@ Returns a function to create a `Slate.Inline`.
 import { inline } from 'slate-sugar';
 
 const link = inline('link');
-link();// creates a Slate.Inline of type 'link'
+
+// creates a Slate.Inline of type 'link'
+// with data { href: '/home' }
+// and a single child text node 'super link'
+link({ href: '/home' }, 'super link');
 ```
 
 ### `range(type: string): NodeFactory`
@@ -89,10 +98,13 @@ Returns a function to apply marks to a range.
 import { range } from 'slate-sugar';
 
 const bold = range('bold');
-bold('Bold content');// creates a Slate.Text with 'bold' applied to the range
+
+// creates a Slate.Text node
+// with the 'bold' mark applied to the range
+bold('Bold content');
 ```
 
-### `document(nodes: Slate.Node[]): Slate.Document`
+### `document(nodes: Nodes): Slate.Document`
 
 Creates a document containing `nodes`.
 
@@ -108,7 +120,7 @@ document([
 ]);
 ```
 
-### `createNode(type?: string, props?: Object, nodes?: NodeIsh | NodeIsh[]): Slate.Node`
+### `createNode(type?: string, props?: Object, nodes?: Nodes): Slate.Node`
 
 Creates a `Slate.Node` from the provided definition.
 
