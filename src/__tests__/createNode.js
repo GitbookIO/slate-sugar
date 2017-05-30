@@ -42,13 +42,6 @@ test('should create an inline node', (t) => {
     t.is(actual, expected);
 });
 
-test('should create a document', (t) => {
-    const actual = createNode(null, { kind: 'document' }) instanceof Document;
-    const expected = true;
-
-    t.is(actual, expected);
-});
-
 test('should throw an error when trying to create a node of an unknown kind', (t) => {
     t.throws(() => createNode('heading', { kind: 'wut' }));
 });
@@ -111,6 +104,30 @@ test('should add marks to a range of text', (t) => {
             character.marks.every(mark => mark.type === 'bold')
         );
     const expected = true;
+
+    t.is(actual, expected);
+});
+
+test('should create a document', (t) => {
+    const actual = createNode(null, { kind: 'document' }) instanceof Document;
+    const expected = true;
+
+    t.is(actual, expected);
+});
+
+test('should add nodes to the document', (t) => {
+    const heading = createNode('heading', { kind: 'block' }, 'super heading');
+    const paragraph = createNode('paragraph', { kind: 'block' }, 'super paragraph');
+    const actual = createNode(null, { kind: 'document' }, [heading, paragraph]).nodes.size;
+    const expected = 2;
+
+    t.is(actual, expected);
+});
+
+test('should create a document with a starting paragraph', (t) => {
+    const paragraph = createNode('paragraph', { kind: 'block' }, 'super paragraph');
+    const actual = createNode(null, { kind: 'document' }, [paragraph]).nodes.first();
+    const expected = paragraph;
 
     t.is(actual, expected);
 });

@@ -28,7 +28,7 @@ function createNode(type, props = {}, nodes = []) {
 
     switch (kind) {
     case 'document':
-        return Document.create();
+        return create(Document, null, nodes, {});
     case 'text':
         return createText(nodes, otherProps.marks || []);
     case 'block':
