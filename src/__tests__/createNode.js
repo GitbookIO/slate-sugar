@@ -1,6 +1,7 @@
 import test from 'ava';
 import { Document, Block, Inline, Text } from 'slate';
 import createNode from '../createNode';
+import helpers from './helpers';
 
 test('should create a block node', (t) => {
     const actual = createNode('heading', { kind: 'block' }) instanceof Block;
@@ -98,11 +99,10 @@ test('should create a text node from plain string within a block node', (t) => {
 });
 
 test('should add marks to a range of text', (t) => {
-    const actual = createNode(null, { kind: 'text', marks: ['bold'] }, 'super bold')
-        .characters
-        .every(character =>
-            character.marks.every(mark => mark.type === 'bold')
-        );
+    const actual = helpers.hasMark(createNode(null, {
+        kind: 'text',
+        marks: ['bold']
+    }, 'super bold'), 'bold');
     const expected = true;
 
     t.is(actual, expected);

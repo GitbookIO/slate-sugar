@@ -3,6 +3,7 @@
 import test from 'ava';
 import Slate, { Document, Block, Inline, Text } from 'slate';
 import createHyperscript from '../createHyperscript';
+import helpers from './helpers';
 
 test('should return a function', (t) => {
     const actual = typeof createHyperscript();
@@ -97,18 +98,15 @@ test('should create a text node', (t) => {
 });
 
 test('should add marks to the text', (t) => {
-    const actual = createHyperscript({
+    const actual = helpers.hasMark(createHyperscript({
         marks: ['bold']
-    })('bold', null, 'super bold').characters.every(
-        character => character.marks.every(
-            mark => mark.get('type') === 'bold')
-        );
+    })('bold', null, 'super bold'), 'bold');
     const expected = true;
 
     t.is(actual, expected);
 });
 
-test.failing('should create a document from jsx', (t) => {
+test('should create a document from jsx', (t) => {
     /* eslint-disable no-unused-vars, react/react-in-jsx-scope */
     const h = createHyperscript({
         blocks: [
@@ -161,23 +159,24 @@ test.failing('should create a document from jsx', (t) => {
                     },
                     {
                         kind: 'text',
+                        text: ' and some '
+                    },
+                    {
+                        kind: 'text',
                         ranges: [
                             {
-                                kind: 'text',
-                                text: ' and some '
-                            },
-                            {
-                                kind: 'text',
                                 text: 'bold content',
                                 marks: [
-                                    'bold'
+                                    {
+                                        type: 'bold'
+                                    }
                                 ]
-                            },
-                            {
-                                kind: 'text',
-                                text: '.'
                             }
                         ]
+                    },
+                    {
+                        kind: 'text',
+                        text: '.'
                     }
                 ]
             }

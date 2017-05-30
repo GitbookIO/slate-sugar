@@ -8,23 +8,23 @@ function isChildren(nodes) {
     );
 }
 
-function createShorthand(kind) {
-    return type => (data, nodes) => {
-        if (nodes == null && isChildren(data)) {
-            nodes = data;
-            data = null;
+function createShorthand(kind, mergeProps = props => ({ data: props })) {
+    return type => (props, nodes) => {
+        if (nodes == null && isChildren(props)) {
+            nodes = props;
+            props = null;
         }
 
         return createNode(type, {
             kind,
-            data
+            ...mergeProps(props, type, kind)
         }, nodes);
     };
 }
 
 export const block = createShorthand('block');
 export const inline = createShorthand('inline');
-export const range = createShorthand('text');
-export const document = nodes => createNode(null, { kind: 'document' }, nodes);
+export const range = createShorthand('text', (props, type) => ({ marks: [type] }));
+export const document = createShorthand('document')();
 
 export default createShorthand;

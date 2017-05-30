@@ -1,6 +1,7 @@
 import test from 'ava';
 import { Block, Inline, Text, Document } from 'slate';
 import { block, inline, range, document } from '../shorthands';
+import helpers from './helpers';
 
 test('should return a function', (t) => {
     const actual = typeof block('heading');
@@ -82,11 +83,7 @@ test('should create a text node with provided content', (t) => {
 });
 
 test('should add marks to the range', (t) => {
-    const actual = range('bold')('super bold')
-        .characters
-        .every(character =>
-            character.marks.every(mark => mark.get('type') === 'bold')
-        );
+    const actual = helpers.hasMark(range('bold')('super bold'), 'bold');
     const expected = true;
 
     t.is(actual, expected);
