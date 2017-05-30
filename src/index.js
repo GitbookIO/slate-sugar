@@ -2,7 +2,8 @@ export {
     default as createShorthand,
     block,
     range,
-    inline
+    inline,
+    document
 } from './shorthands';
 
 export {

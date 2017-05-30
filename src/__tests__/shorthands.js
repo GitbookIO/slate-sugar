@@ -1,6 +1,6 @@
 import test from 'ava';
-import { Block, Inline, Text } from 'slate';
-import { block, inline, range } from '../shorthands';
+import { Block, Inline, Text, Document } from 'slate';
+import { block, inline, range, document } from '../shorthands';
 
 test('should return a function', (t) => {
     const actual = typeof block('heading');
@@ -88,6 +88,21 @@ test('should add marks to the range', (t) => {
             character.marks.every(mark => mark.get('type') === 'bold')
         );
     const expected = true;
+
+    t.is(actual, expected);
+});
+
+test('should create a document', (t) => {
+    const actual = document() instanceof Document;
+    const expected = true;
+
+    t.is(actual, expected);
+});
+
+test('should create a document with a heading', (t) => {
+    const heading = block('heading')('super heading');
+    const actual = document([heading]).nodes.first();
+    const expected = heading;
 
     t.is(actual, expected);
 });

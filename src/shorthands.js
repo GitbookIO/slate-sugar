@@ -25,5 +25,6 @@ function createShorthand(kind) {
 export const block = createShorthand('block');
 export const inline = createShorthand('inline');
 export const range = createShorthand('text');
+export const document = nodes => createNode(null, { kind: 'document' }, nodes);
 
 export default createShorthand;
