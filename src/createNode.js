@@ -2,7 +2,7 @@ import { Document, Block, Inline, Text, Mark } from 'slate';
 
 function createText(text, marks) {
     text = String(text);
-    marks = Mark.createSet(marks.map(type => ({ type })));
+    marks = Mark.createSet(marks.map(mark => typeof mark === 'string' ? { type: mark } : mark));
     return Text.createFromString(text, marks);
 }
 

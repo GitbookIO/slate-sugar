@@ -17,14 +17,21 @@ function createShorthand(kind, mergeProps = props => ({ data: props })) {
 
         return createNode(type, {
             kind,
-            ...mergeProps(props, type, kind)
+            ...mergeProps(props, type)
         }, nodes);
     };
 }
 
 export const block = createShorthand('block');
 export const inline = createShorthand('inline');
-export const range = createShorthand('text', (props, type) => ({ marks: [type] }));
+export const range = createShorthand('text', (props, type) => ({
+    marks: [
+        {
+            type,
+            data: props
+        }
+    ]
+}));
 export const document = createShorthand('document')();
 
 export default createShorthand;

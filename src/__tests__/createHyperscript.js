@@ -123,7 +123,7 @@ test('should create a document from jsx', (t) => {
     const actual = Slate.Raw.serializeDocument((
         <document>
             <heading>Super title</heading>
-            <paragraph>With a paragraph of text, a <link href="/home">link</link> and some <bold>bold content</bold>.</paragraph>
+            <paragraph>With a paragraph of text, a <link href="/home">link</link> and some <bold foo="bar">bold content</bold>.</paragraph>
         </document>
     ), { terse: true });
     const expected = {
@@ -168,7 +168,10 @@ test('should create a document from jsx', (t) => {
                                 text: 'bold content',
                                 marks: [
                                     {
-                                        type: 'bold'
+                                        type: 'bold',
+                                        data: {
+                                            foo: 'bar'
+                                        }
                                     }
                                 ]
                             }
