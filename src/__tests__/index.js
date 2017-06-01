@@ -1,7 +1,7 @@
 import test from 'ava';
-import createNode, { createShorthand, block, inline, range, document } from '../';
+import createHyperscript from '../';
 
-[createNode, createShorthand, block, inline, range, document].forEach((fn) => {
+[createHyperscript].forEach((fn) => {
     test('should export a set of helpers', (t) => {
         const actual = typeof fn;
         const expected = 'function';
