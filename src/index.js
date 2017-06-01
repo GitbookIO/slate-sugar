@@ -3,41 +3,35 @@ import { Document, Block, Text, Inline, Mark } from 'slate';
 function createNode(type, props, children) {
     const { kind } = props;
 
-    if (kind === 'text') {
-        const { marks = [] } = props;
-        return Text.createFromString(
-            String(children.join('')),
-            Mark.createSet(marks.map(mark =>
-                typeof mark === 'string'
-                    ? ({ type: mark })
-                    : mark
-            ))
-        );
-    }
-
-    if (kind === 'document') {
+    switch (kind) {
+    case 'document':
         return Document.create({
             nodes: children
         });
+    case 'text': {
+        const text = String(children.join(''));
+        const marks = Mark.createSet((props.marks || []).map(mark =>
+            typeof mark === 'string'
+                ? ({ type: mark })
+                : mark
+        ));
+        return Text.createFromString(text, marks);
     }
-
-    if (kind === 'inline') {
+    case 'inline':
         return Inline.create({
             type,
             nodes: children,
             ...props
         });
-    }
-
-    if (kind === 'block') {
+    case 'block':
         return Block.create({
             type,
             nodes: children,
             ...props
         });
+    default:
+        throw new Error(`Cannot create Node of unknown kind ${kind}`);
     }
-
-    throw new Error(`Cannot create Node of unknown kind ${kind}`);
 }
 
 function defaultTransformer(props) {
