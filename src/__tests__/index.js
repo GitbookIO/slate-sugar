@@ -264,7 +264,7 @@ test('should add data to registered marks', (t) => {
 
 test('should rename document', (t) => {
     h = createHyperscript({
-        doc: () => ({ type: 'document' })
+        doc: () => ({ kind: 'document' })
     });
     const actual = <doc /> instanceof Document;
     const expected = true;

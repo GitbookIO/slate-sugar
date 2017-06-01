@@ -1,8 +1,10 @@
 import { Document, Block, Text, Inline, Mark } from 'slate';
 
 function createNode(type, props, children) {
-    if (type === 'text') {
-        const marks = (props && props.marks) || [];
+    const { kind } = props;
+
+    if (kind === 'text') {
+        const { marks = [] } = props;
         return Text.createFromString(
             String(children.join('')),
             Mark.createSet(marks.map(mark =>
@@ -13,13 +15,12 @@ function createNode(type, props, children) {
         );
     }
 
-    if (type === 'document') {
+    if (kind === 'document') {
         return Document.create({
             nodes: children
         });
     }
 
-    const { kind } = props;
     if (kind === 'inline') {
         return Inline.create({
             type,
@@ -61,7 +62,7 @@ function inlineTransformer({ type, ...data }) {
 
 function markTransformer({ type, ...data }) {
     return {
-        type: 'text',
+        kind: 'text',
         marks: [
             {
                 type,
@@ -73,8 +74,15 @@ function markTransformer({ type, ...data }) {
 
 function documentTransformer({ type, ...data }) {
     return {
-        type: 'document',
+        kind: 'document',
         data
+    };
+}
+
+function textTransformer({ type, ...props }) {
+    return {
+        kind: 'text',
+        ...props
     };
 }
 
@@ -95,6 +103,7 @@ function createHyperscript(
 ) {
     const transformers = {
         document: documentTransformer,
+        text: textTransformer,
         ...createTransformers(blocks, blockTransformer),
         ...createTransformers(inlines, inlineTransformer),
         ...createTransformers(marks, markTransformer),
@@ -105,7 +114,7 @@ function createHyperscript(
         children = children.map(child =>
             typeof child === 'object'
                 ? child
-                : createNode('text', null, children)
+                : createNode(null, { kind: 'text' }, children)
         );
 
         const transformer = transformers.hasOwnProperty(type)
