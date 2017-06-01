@@ -271,3 +271,22 @@ test('should rename document', (t) => {
 
     t.is(actual, expected);
 });
+
+test('should register a transformer for a group', (t) => {
+    h = createHyperscript({
+        voids: [
+            'img'
+        ]
+    }, {
+        voids: ({ type, ...data }) => ({
+            type,
+            data,
+            kind: 'block',
+            isVoid: true
+        })
+    });
+    const actual = (<img />).isVoid;
+    const expected = true;
+
+    t.is(actual, expected);
+});

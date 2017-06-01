@@ -88,21 +88,38 @@ function createTransformers(types, transformer) {
 }
 
 function createHyperscript(
-    {
-        blocks = [],
-        inlines = [],
-        marks = [],
-        ...customTransformers
-    } = {}
+    groups = {},
+    groupsTransformer = {}
 ) {
-    const transformers = {
+    groups = {
         document: documentTransformer,
         text: textTransformer,
-        ...createTransformers(blocks, blockTransformer),
-        ...createTransformers(inlines, inlineTransformer),
-        ...createTransformers(marks, markTransformer),
-        ...customTransformers
+        ...groups
     };
+    groupsTransformer = {
+        blocks: blockTransformer,
+        inlines: inlineTransformer,
+        marks: markTransformer,
+        ...groupsTransformer
+    };
+    const transformers = Object
+        .keys(groups)
+        .reduce((acc, group) => {
+            if (Array.isArray(groups[group])) {
+                return {
+                    ...createTransformers(
+                        groups[group],
+                        groupsTransformer[group]
+                    ),
+                    ...acc
+                };
+            }
+
+            return {
+                [group]: groups[group],
+                ...acc
+            };
+        }, {});
 
     return (type, props, ...children) => {
         children = children.map(child =>
