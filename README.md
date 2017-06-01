@@ -18,9 +18,13 @@ yarn add slate-sugar
 
 ## Documentation
 
-### `createHyperscript({ blocks: string[], inlines: string[], marks: string[] }): (string: type, data?: Object, ...nodes) => Slate.Node`
+### `createHyperscript({ blocks, inlines, marks })`
 
-Defines a set of `Block`, `Inline` and `Mark` nodes and returns an hyper script compatible function.
+* `blocks: string[]` list of tags to be considered `Block`
+* `inlines: string[]` list of tags to be considered `Inline`
+* `marks: string[]` list of tags to be considered `Text` with `Mark`s applied to the range
+
+Returns a JSX-compatible function.
 
 **Example:**
 
