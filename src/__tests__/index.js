@@ -1,9 +1,11 @@
 import test from 'ava';
-import node from '../';
+import createHyperscript from '../';
 
-test('should create a block', (t) => {
-    const actual = node();
-    const expected = 'foo';
+[createHyperscript].forEach((fn) => {
+    test('should export a set of helpers', (t) => {
+        const actual = typeof fn;
+        const expected = 'function';
 
-    t.is(actual, expected);
+        t.is(actual, expected);
+    });
 });

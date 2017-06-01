@@ -5,8 +5,14 @@
   "license": "Apache-2.0",
   "repository": "git://github.com/GitbookIO/slate-sugar.git",
   "main": "./dist/index.js",
-  "dependencies": {},
+  "dependencies": {
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "slate": "^0.20.1"
+  },
   "peerDependencies": {
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
     "slate": "^0.20.1"
   },
   "devDependencies": {
@@ -14,6 +20,7 @@
     "babel-cli": "^6.11.4",
     "babel-core": "^6.11.4",
     "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.24.1",
     "eslint": "^3.1.1",
@@ -21,15 +28,15 @@
   },
   "scripts": {
     "lint": "eslint --fix .",
-    "pretest": "npm run lint",
     "test": "ava",
     "test:watch": "ava --watch",
-    "prebuild": "npm run test",
+    "prebuild": "npm run lint && npm run test",
     "build": "babel src --out-dir dist --ignore __tests__",
     "prepublish": "npm run build"
   },
   "ava": {
-    "require": "babel-register"
+    "require": "babel-register",
+    "babel": "inherit"
   },
   "keywords": [
     "slate"
