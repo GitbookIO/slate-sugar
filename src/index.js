@@ -43,37 +43,44 @@ function defaultTransformer(props) {
     return props;
 }
 
-function createBlockTransformer(type) {
-    return props => ({
+function blockTransformer({ type, ...data }) {
+    return {
         type,
-        kind: 'block',
-        data: props
-    });
+        data,
+        kind: 'block'
+    };
 }
 
-function createInlineTransformer(type) {
-    return props => ({
+function inlineTransformer({ type, ...data }) {
+    return {
         type,
-        kind: 'inline',
-        data: props
-    });
+        data,
+        kind: 'inline'
+    };
 }
 
-function createMarkTransformer(type) {
-    return props => ({
+function markTransformer({ type, ...data }) {
+    return {
         type: 'text',
         marks: [
             {
                 type,
-                data: props
+                data
             }
         ]
-    });
+    };
 }
 
-function createTransformers(types, createTransformer) {
+function documentTransformer({ type, ...data }) {
+    return {
+        type: 'document',
+        data
+    };
+}
+
+function createTransformers(types, transformer) {
     return types.reduce((acc, type) => ({
-        [type]: createTransformer(type),
+        [type]: transformer,
         ...acc
     }), {});
 }
@@ -87,10 +94,10 @@ function createHyperscript(
     } = {}
 ) {
     const transformers = {
-        document: props => ({ type: 'document', data: props }),
-        ...createTransformers(blocks, createBlockTransformer),
-        ...createTransformers(inlines, createInlineTransformer),
-        ...createTransformers(marks, createMarkTransformer),
+        document: documentTransformer,
+        ...createTransformers(blocks, blockTransformer),
+        ...createTransformers(inlines, inlineTransformer),
+        ...createTransformers(marks, markTransformer),
         ...customTransformers
     };
 
