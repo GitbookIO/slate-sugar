@@ -28,7 +28,7 @@
     "lint": "eslint --fix .",
     "test": "ava",
     "test:watch": "ava --watch",
-    "prebuild": "npm run lint && npm run test",
+    "prebuild": "npm run lint && npm run test && rm -rf ./dist",
     "build": "babel src --out-dir dist --ignore __tests__",
     "prepublish": "npm run build"
   },
