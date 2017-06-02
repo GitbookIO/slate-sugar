@@ -80,9 +80,23 @@ export function textTransformer({ type, ...props }) {
     };
 }
 
-function createTransformers(types, transformer) {
-    return types.reduce((acc, type) => ({
-        [type]: transformer,
+function normalizeName(name) {
+    return name.toLowerCase().replace(/_/g, '-');
+}
+
+function createTransformers(map, transformer) {
+    return Object.keys(map).reduce((acc, name) => ({
+        [normalizeName(name)]: ({ type, ...props }) => transformer({
+            type: map[name],
+            ...props
+        }),
+        ...acc
+    }), {});
+}
+
+function toMap(ar) {
+    return ar.reduce((acc, item) => ({
+        [item]: item,
         ...acc
     }), {});
 }
@@ -105,18 +119,21 @@ function createHyperscript(
     const transformers = Object
         .keys(groups)
         .reduce((acc, group) => {
-            if (Array.isArray(groups[group])) {
+            if (typeof groups[group] === 'function') {
                 return {
-                    ...createTransformers(
-                        groups[group],
-                        groupsTransformer[group]
-                    ),
+                    [group]: groups[group],
                     ...acc
                 };
             }
 
+            const map = Array.isArray(groups[group])
+                ? toMap((groups[group]))
+                : groups[group];
             return {
-                [group]: groups[group],
+                ...createTransformers(
+                    map,
+                    groupsTransformer[group]
+                ),
                 ...acc
             };
         }, {});

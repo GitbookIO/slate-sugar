@@ -180,9 +180,9 @@ test('should throw an error when trying to create a node with unknown kind', (t)
 
 test('should register default blocks', (t) => {
     h = createHyperscript({
-        blocks: [
-            'paragraph'
-        ]
+        blocks: {
+            paragraph: 'PARAGRAPH'
+        }
     });
     const actual = <paragraph /> instanceof Block;
     const expected = true;
@@ -190,11 +190,47 @@ test('should register default blocks', (t) => {
     t.is(actual, expected);
 });
 
-test('should not lose block\'s data', (t) => {
+test('should set type accordingly', (t) => {
+    h = createHyperscript({
+        blocks: {
+            paragraph: 'PARAGRAPH'
+        }
+    });
+    const actual = (<paragraph />).type;
+    const expected = 'PARAGRAPH';
+
+    t.is(actual, expected);
+});
+
+test('should normalize the name', (t) => {
+    h = createHyperscript({
+        blocks: {
+            HEADING_1: 'HEADING_1'
+        }
+    });
+    const actual = (<heading-1 />).type;
+    const expected = 'HEADING_1';
+
+    t.is(actual, expected);
+});
+
+test('should work with arrays as well', (t) => {
     h = createHyperscript({
         blocks: [
-            'paragraph'
+            'heading'
         ]
+    });
+    const actual = (<heading />).type;
+    const expected = 'heading';
+
+    t.is(actual, expected);
+});
+
+test('should not lose block\'s data', (t) => {
+    h = createHyperscript({
+        blocks: {
+            paragraph: 'PARAGRAPH'
+        }
     });
     const actual = (<paragraph foo="bar" />).data.get('foo');
     const expected = 'bar';
@@ -204,9 +240,9 @@ test('should not lose block\'s data', (t) => {
 
 test('should register default inlines', (t) => {
     h = createHyperscript({
-        inlines: [
-            'link'
-        ]
+        inlines: {
+            link: 'LINK'
+        }
     });
     const actual = <link /> instanceof Inline;
     const expected = true;
@@ -216,9 +252,9 @@ test('should register default inlines', (t) => {
 
 test('should not lose inline\'s data', (t) => {
     h = createHyperscript({
-        inlines: [
-            'link'
-        ]
+        inlines: {
+            link: 'LINK'
+        }
     });
     const actual = (<link foo="bar" />).data.get('foo');
     const expected = 'bar';
@@ -228,15 +264,15 @@ test('should not lose inline\'s data', (t) => {
 
 test('should register default marks', (t) => {
     h = createHyperscript({
-        marks: [
-            'bold'
-        ]
+        marks: {
+            bold: 'BOLD'
+        }
     });
     const actual = (
         <bold>Super bold</bold>
     ).characters.every(
         character => character.marks.size === 1 && character.marks.every(
-            mark => mark.get('type') === 'bold'
+            mark => mark.get('type') === 'BOLD'
         )
     );
     const expected = true;
@@ -246,9 +282,9 @@ test('should register default marks', (t) => {
 
 test('should add data to registered marks', (t) => {
     h = createHyperscript({
-        marks: [
-            'bold'
-        ]
+        marks: {
+            bold: 'BOLD'
+        }
     });
     const actual = (
         <bold foo="bar">Super bold</bold>
@@ -274,9 +310,9 @@ test('should rename document', (t) => {
 
 test('should register a transformer for a group', (t) => {
     h = createHyperscript({
-        voids: [
-            'img'
-        ]
+        voids: {
+            img: 'IMG'
+        }
     }, {
         voids: ({ type, ...data }) => ({
             type,
