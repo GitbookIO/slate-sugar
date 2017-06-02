@@ -34,11 +34,11 @@ function createNode(type, props, children) {
     }
 }
 
-function defaultTransformer(props) {
+export function defaultTransformer(props) {
     return props;
 }
 
-function blockTransformer({ type, ...data }) {
+export function blockTransformer({ type, ...data }) {
     return {
         type,
         data,
@@ -46,7 +46,7 @@ function blockTransformer({ type, ...data }) {
     };
 }
 
-function inlineTransformer({ type, ...data }) {
+export function inlineTransformer({ type, ...data }) {
     return {
         type,
         data,
@@ -54,7 +54,7 @@ function inlineTransformer({ type, ...data }) {
     };
 }
 
-function markTransformer({ type, ...data }) {
+export function markTransformer({ type, ...data }) {
     return {
         kind: 'text',
         marks: [
@@ -66,14 +66,14 @@ function markTransformer({ type, ...data }) {
     };
 }
 
-function documentTransformer({ type, ...data }) {
+export function documentTransformer({ type, ...data }) {
     return {
         kind: 'document',
         data
     };
 }
 
-function textTransformer({ type, ...props }) {
+export function textTransformer({ type, ...props }) {
     return {
         kind: 'text',
         ...props
