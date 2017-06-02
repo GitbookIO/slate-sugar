@@ -69,6 +69,40 @@ const document = (
 );
 ```
 
+The groups (`blocks`, `inlines`, `marks` in this example) can also be a map `<name, type>`:
+
+```jsx harmony
+/* @jsx h */
+import createHyperscript from 'slate-sugar';
+
+const h = createHyperscript({
+    blocks: {
+        HEADING: 'TYPE_HEADING',
+        PARAGRAPH: 'TYPE_PARAGRAPH'
+    },
+    inlines: {
+        LINK: 'TYPE_LINK'
+    },
+    marks: {
+        BOLD: 'TYPE_BOLD'
+    }
+});
+const document = (
+    <document>
+        <heading id="introduction">
+            Introduction
+        </heading>
+        <paragraph>
+            This is a super <bold>bold</bold> paragraph.
+            Also, it has a <link href="/">link</link> in it.
+        </paragraph>
+    </document>
+);
+```
+
+It behaves the same way than `string[]` except the tag names will be matched against the map's keys.
+It's especially useful if you don't want to use constants' values to create documents.
+
 ### With Custom Defaults
 
 ```jsx harmony
@@ -118,11 +152,11 @@ const document = (
 
 ```
 type Transformer = ({ type, ...otherProps }) => Object
-type Group = string[] | Transformer
+type Group = <name: string, type: string> | string[] | Transformer
 ```
 
-* `groups <name: string, Group>`: if `Group` is `string[]`, the matching `Transformer` is taken from `groupsTransformer`. If it's a `Transformer`, it will be used to generate new props for tags matching `name`.
-* `groupsTransformer <name: string, Transformer>`: used to transform groups' props with the same name.
+* `groups <name: string, Group>`: if `Group` is a `Transformer`, it will be used to generates props for tags with `name`. Otherwise, if it's an object or an array, the `Transformer` is taken from `groupsTransformer`.
+* `groupsTransformer <name: string, Transformer>`: used to transform groups' props matching `name`.
 
 Returns a JSX-compatible function.
 
