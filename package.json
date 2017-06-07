@@ -1,7 +1,7 @@
 {
   "name": "slate-sugar",
   "description": "Set of Slate helpers to create nodes and documents.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "Apache-2.0",
   "repository": "git://github.com/GitbookIO/slate-sugar.git",
   "main": "./dist/index.js",
