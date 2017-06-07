@@ -1,8 +1,7 @@
-/* @jsx h */
-/* eslint-disable react/react-in-jsx-scope, no-unused-vars */
+/** @jsx h */
 
 import test from 'ava';
-import Slate, { State, Document, Block, Text, Inline } from 'slate';
+import { Raw, State, Document, Block, Text, Inline } from 'slate';
 import createHyperscript from '../';
 
 let h;
@@ -333,7 +332,7 @@ test('should work with text surrounded by other nodes', (t) => {
             'link'
         ]
     });
-    const actual = Slate.Raw.serializeDocument(
+    const actual = Raw.serializeDocument(
         <document>
             <link>Some <link>link</link> and text.</link>
         </document>
@@ -388,7 +387,7 @@ test('should create a state', (t) => {
 
 test('should normalize by default when creating a state', (t) => {
     h = createHyperscript();
-    const actual = Slate.Raw.serializeState(
+    const actual = Raw.serializeState(
         <state>
             <document>
                 <section kind="block">
@@ -431,7 +430,7 @@ test('should normalize by default when creating a state', (t) => {
 
 test('should not normalize state if disabled', (t) => {
     h = createHyperscript();
-    const actual = Slate.Raw.serializeState(
+    const actual = Raw.serializeState(
         <state normalize={false}>
             <document>
                 <section kind="block">
