@@ -142,7 +142,7 @@ function createHyperscript(
         children = children.map(child =>
             typeof child === 'object'
                 ? child
-                : createNode(null, { kind: 'text' }, children)
+                : createNode(null, { kind: 'text' }, [child])
         );
 
         const transformer = transformers.hasOwnProperty(type)

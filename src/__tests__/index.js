@@ -2,7 +2,7 @@
 /* eslint-disable react/react-in-jsx-scope, no-unused-vars */
 
 import test from 'ava';
-import { Document, Block, Text, Inline } from 'slate';
+import Slate, { Document, Block, Text, Inline } from 'slate';
 import createHyperscript from '../';
 
 let h;
@@ -325,4 +325,47 @@ test('should register a transformer for a group', (t) => {
     const expected = true;
 
     t.is(actual, expected);
+});
+
+test('should work with text surrounded by other nodes', (t) => {
+    h = createHyperscript({
+        inlines: [
+            'link'
+        ]
+    });
+    const actual = Slate.Raw.serializeDocument(
+        <document>
+            <link>Some <link>link</link> and text.</link>
+        </document>
+    , { terse: true });
+    const expected = {
+        nodes: [
+            {
+                kind: 'inline',
+                type: 'link',
+                nodes: [
+                    {
+                        kind: 'text',
+                        text: 'Some '
+                    },
+                    {
+                        kind: 'inline',
+                        type: 'link',
+                        nodes: [
+                            {
+                                kind: 'text',
+                                text: 'link'
+                            }
+                        ]
+                    },
+                    {
+                        kind: 'text',
+                        text: ' and text.'
+                    }
+                ]
+            }
+        ]
+    };
+
+    t.deepEqual(actual, expected);
 });
