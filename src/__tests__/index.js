@@ -2,7 +2,7 @@
 /* eslint-disable react/react-in-jsx-scope, no-unused-vars */
 
 import test from 'ava';
-import Slate, { Document, Block, Text, Inline } from 'slate';
+import Slate, { State, Document, Block, Text, Inline } from 'slate';
 import createHyperscript from '../';
 
 let h;
@@ -361,6 +361,100 @@ test('should work with text surrounded by other nodes', (t) => {
                     {
                         kind: 'text',
                         text: ' and text.'
+                    }
+                ]
+            }
+        ]
+    };
+
+    t.deepEqual(actual, expected);
+});
+
+test('should create a state', (t) => {
+    h = createHyperscript();
+    const actual = (
+            <state>
+                <document>
+                    <paragraph kind="block">
+                        Super paragraph.
+                    </paragraph>
+                </document>
+            </state>
+        ) instanceof State;
+    const expected = true;
+
+    t.is(actual, expected);
+});
+
+test('should normalize by default when creating a state', (t) => {
+    h = createHyperscript();
+    const actual = Slate.Raw.serializeState(
+        <state>
+            <document>
+                <section kind="block">
+                    <link kind="inline">Super link.</link>
+                </section>
+            </document>
+        </state>
+    , { terse: true });
+    const expected = {
+        nodes: [
+            {
+                kind: 'block',
+                type: 'section',
+                nodes: [
+                    {
+                        kind: 'text',
+                        text: ''
+                    },
+                    {
+                        kind: 'inline',
+                        type: 'link',
+                        nodes: [
+                            {
+                                kind: 'text',
+                                text: 'Super link.'
+                            }
+                        ]
+                    },
+                    {
+                        kind: 'text',
+                        text: ''
+                    }
+                ]
+            }
+        ]
+    };
+
+    t.deepEqual(actual, expected);
+});
+
+test('should not normalize state if disabled', (t) => {
+    h = createHyperscript();
+    const actual = Slate.Raw.serializeState(
+        <state normalize={false}>
+            <document>
+                <section kind="block">
+                    <link kind="inline">Super link.</link>
+                </section>
+            </document>
+        </state>
+        , { terse: true });
+    const expected = {
+        nodes: [
+            {
+                kind: 'block',
+                type: 'section',
+                nodes: [
+                    {
+                        kind: 'inline',
+                        type: 'link',
+                        nodes: [
+                            {
+                                kind: 'text',
+                                text: 'Super link.'
+                            }
+                        ]
                     }
                 ]
             }
