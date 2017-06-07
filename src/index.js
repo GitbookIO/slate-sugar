@@ -1,9 +1,13 @@
-import { Document, Block, Text, Inline, Mark } from 'slate';
+import { State, Document, Block, Text, Inline, Mark } from 'slate';
 
 function createNode(type, props, children) {
     const { kind } = props;
 
     switch (kind) {
+    case 'state':
+        return State.create({
+            document: children[0]
+        }, props);
     case 'document':
         return Document.create({
             nodes: children
@@ -66,6 +70,13 @@ export function markTransformer({ type, ...data }) {
     };
 }
 
+export function stateTransformer({ type, ...props }) {
+    return {
+        kind: 'state',
+        ...props
+    };
+}
+
 export function documentTransformer({ type, ...data }) {
     return {
         kind: 'document',
@@ -106,6 +117,7 @@ function createHyperscript(
     groupsTransformer = {}
 ) {
     groups = {
+        state: stateTransformer,
         document: documentTransformer,
         text: textTransformer,
         ...groups
@@ -142,7 +154,7 @@ function createHyperscript(
         children = children.map(child =>
             typeof child === 'object'
                 ? child
-                : createNode(null, { kind: 'text' }, children)
+                : createNode(null, { kind: 'text' }, [child])
         );
 
         const transformer = transformers.hasOwnProperty(type)

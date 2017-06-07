@@ -1,8 +1,7 @@
-/* @jsx h */
-/* eslint-disable react/react-in-jsx-scope, no-unused-vars */
+/** @jsx h */
 
 import test from 'ava';
-import { Document, Block, Text, Inline } from 'slate';
+import { Raw, State, Document, Block, Text, Inline } from 'slate';
 import createHyperscript from '../';
 
 let h;
@@ -325,4 +324,141 @@ test('should register a transformer for a group', (t) => {
     const expected = true;
 
     t.is(actual, expected);
+});
+
+test('should work with text surrounded by other nodes', (t) => {
+    h = createHyperscript({
+        inlines: [
+            'link'
+        ]
+    });
+    const actual = Raw.serializeDocument(
+        <document>
+            <link>Some <link>link</link> and text.</link>
+        </document>
+    , { terse: true });
+    const expected = {
+        nodes: [
+            {
+                kind: 'inline',
+                type: 'link',
+                nodes: [
+                    {
+                        kind: 'text',
+                        text: 'Some '
+                    },
+                    {
+                        kind: 'inline',
+                        type: 'link',
+                        nodes: [
+                            {
+                                kind: 'text',
+                                text: 'link'
+                            }
+                        ]
+                    },
+                    {
+                        kind: 'text',
+                        text: ' and text.'
+                    }
+                ]
+            }
+        ]
+    };
+
+    t.deepEqual(actual, expected);
+});
+
+test('should create a state', (t) => {
+    h = createHyperscript();
+    const actual = (
+            <state>
+                <document>
+                    <paragraph kind="block">
+                        Super paragraph.
+                    </paragraph>
+                </document>
+            </state>
+        ) instanceof State;
+    const expected = true;
+
+    t.is(actual, expected);
+});
+
+test('should normalize by default when creating a state', (t) => {
+    h = createHyperscript();
+    const actual = Raw.serializeState(
+        <state>
+            <document>
+                <section kind="block">
+                    <link kind="inline">Super link.</link>
+                </section>
+            </document>
+        </state>
+    , { terse: true });
+    const expected = {
+        nodes: [
+            {
+                kind: 'block',
+                type: 'section',
+                nodes: [
+                    {
+                        kind: 'text',
+                        text: ''
+                    },
+                    {
+                        kind: 'inline',
+                        type: 'link',
+                        nodes: [
+                            {
+                                kind: 'text',
+                                text: 'Super link.'
+                            }
+                        ]
+                    },
+                    {
+                        kind: 'text',
+                        text: ''
+                    }
+                ]
+            }
+        ]
+    };
+
+    t.deepEqual(actual, expected);
+});
+
+test('should not normalize state if disabled', (t) => {
+    h = createHyperscript();
+    const actual = Raw.serializeState(
+        <state normalize={false}>
+            <document>
+                <section kind="block">
+                    <link kind="inline">Super link.</link>
+                </section>
+            </document>
+        </state>
+        , { terse: true });
+    const expected = {
+        nodes: [
+            {
+                kind: 'block',
+                type: 'section',
+                nodes: [
+                    {
+                        kind: 'inline',
+                        type: 'link',
+                        nodes: [
+                            {
+                                kind: 'text',
+                                text: 'Super link.'
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    };
+
+    t.deepEqual(actual, expected);
 });

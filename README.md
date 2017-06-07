@@ -160,8 +160,9 @@ type Group = <name: string, type: string> | string[] | Transformer
 
 Returns a JSX-compatible function.
 
-By default, there are two `Transformer`s:
+The default `Transformer`s are:
 
+* `state`: creates a `Slate.State` with its child `<document />`
 * `document`: creates a `Slate.Document` for `<document />` tags
 * `text`: creates a `Slate.Text` for `<text />` tags and add marks if passed (`<text marks={[...]} />`)
 
