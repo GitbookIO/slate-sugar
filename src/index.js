@@ -38,14 +38,14 @@ function createNode(type, props, children) {
     }
 }
 
-export function defaultTransformer(tagName, attributes) {
+export function mapUnknownToProps(tagName, attributes) {
     return {
         type: tagName,
         ...attributes
     };
 }
 
-export function blockTransformer(tagName, attributes) {
+export function mapBlockToProps(tagName, attributes) {
     return {
         type: tagName,
         data: attributes,
@@ -53,7 +53,7 @@ export function blockTransformer(tagName, attributes) {
     };
 }
 
-export function inlineTransformer(tagName, attributes) {
+export function mapInlineToProps(tagName, attributes) {
     return {
         type: tagName,
         data: attributes,
@@ -61,7 +61,7 @@ export function inlineTransformer(tagName, attributes) {
     };
 }
 
-export function markTransformer(tagName, attributes) {
+export function mapMarkToProps(tagName, attributes) {
     return {
         kind: 'text',
         marks: [
@@ -73,55 +73,63 @@ export function markTransformer(tagName, attributes) {
     };
 }
 
-export function stateTransformer(tagName, attributes) {
+export function mapStateToProps(tagName, attributes) {
     return {
         kind: 'state',
         ...attributes
     };
 }
 
-export function documentTransformer(tagName, attributes) {
+export function mapDocumentToProps(tagName, attributes) {
     return {
         kind: 'document',
         data: attributes
     };
 }
 
-export function textTransformer(tagName, attributes) {
+export function mapTextToProps(tagName, attributes) {
     return {
         kind: 'text',
         ...attributes
     };
 }
 
-function normalizeName(name) {
+function getTagName(name) {
     return name.toLowerCase().replace(/_/g, '-');
 }
 
-function createTransformers(map, transformer) {
+function createTagNameMappers(map, mapTagNameToProps) {
     return Object.keys(map).reduce((acc, name) => ({
-        [normalizeName(name)]: (tagName, attributes) => transformer(map[name], attributes),
+        [getTagName(name)]: (tagName, attributes) => mapTagNameToProps(map[name], attributes),
         ...acc
     }), {});
 }
 
+const defaultGroups = {
+    state: mapStateToProps,
+    document: mapDocumentToProps,
+    text: mapTextToProps
+};
+
+const defaultTagNameMappers = {
+    blocks: mapBlockToProps,
+    inlines: mapInlineToProps,
+    marks: mapMarkToProps
+};
+
 function createHyperscript(
     groups = {},
-    groupsTransformer = {}
+    tagNameMappers = {}
 ) {
     groups = {
-        state: stateTransformer,
-        document: documentTransformer,
-        text: textTransformer,
+        ...defaultGroups,
         ...groups
     };
-    groupsTransformer = {
-        blocks: blockTransformer,
-        inlines: inlineTransformer,
-        marks: markTransformer,
-        ...groupsTransformer
+    tagNameMappers = {
+        ...defaultTagNameMappers,
+        ...tagNameMappers
     };
-    const transformers = Object
+    const mappers = Object
         .keys(groups)
         .reduce((acc, group) => {
             if (typeof groups[group] === 'function') {
@@ -133,9 +141,9 @@ function createHyperscript(
 
             const map = groups[group];
             return {
-                ...createTransformers(
+                ...createTagNameMappers(
                     map,
-                    groupsTransformer[group]
+                    tagNameMappers[group]
                 ),
                 ...acc
             };
@@ -148,13 +156,13 @@ function createHyperscript(
                 : createNode(null, { kind: 'text' }, [child])
         );
 
-        const transformer = transformers.hasOwnProperty(tagName)
-            ? transformers[tagName]
-            : defaultTransformer;
+        const mapTagNameToProps = mappers.hasOwnProperty(tagName)
+            ? mappers[tagName]
+            : mapUnknownToProps;
         const {
             type: newType,
             ...newProps
-        } = transformer(tagName, attributes);
+        } = mapTagNameToProps(tagName, attributes);
 
         return createNode(newType, newProps, children);
     };
