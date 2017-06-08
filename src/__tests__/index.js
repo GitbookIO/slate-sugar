@@ -367,7 +367,6 @@ test('should work with text surrounded by other nodes', (t) => {
 });
 
 test('should create a state', (t) => {
-    h = createHyperscript();
     const actual = (
             <state>
                 <document>
@@ -383,7 +382,6 @@ test('should create a state', (t) => {
 });
 
 test('should normalize by default when creating a state', (t) => {
-    h = createHyperscript();
     const actual = Raw.serializeState(
         <state>
             <document>
@@ -426,7 +424,6 @@ test('should normalize by default when creating a state', (t) => {
 });
 
 test('should not normalize state if disabled', (t) => {
-    h = createHyperscript();
     const actual = Raw.serializeState(
         <state normalize={false}>
             <document>
