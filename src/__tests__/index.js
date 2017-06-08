@@ -222,18 +222,6 @@ test('should normalize the name', (t) => {
     t.is(actual, expected);
 });
 
-test('should work with arrays as well', (t) => {
-    h = createHyperscript({
-        blocks: [
-            'heading'
-        ]
-    });
-    const actual = (<heading />).type;
-    const expected = 'heading';
-
-    t.is(actual, expected);
-});
-
 test('should not lose block\'s data', (t) => {
     h = createHyperscript({
         blocks: {
@@ -337,9 +325,9 @@ test('should register a transformer for a group', (t) => {
 
 test('should work with text surrounded by other nodes', (t) => {
     h = createHyperscript({
-        inlines: [
-            'link'
-        ]
+        inlines: {
+            link: 'link'
+        }
     });
     const actual = Raw.serializeDocument(
         <document>

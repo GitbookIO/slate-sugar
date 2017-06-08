@@ -105,13 +105,6 @@ function createTransformers(map, transformer) {
     }), {});
 }
 
-function toMap(ar) {
-    return ar.reduce((acc, item) => ({
-        [item]: item,
-        ...acc
-    }), {});
-}
-
 function createHyperscript(
     groups = {},
     groupsTransformer = {}
@@ -138,9 +131,7 @@ function createHyperscript(
                 };
             }
 
-            const map = Array.isArray(groups[group])
-                ? toMap((groups[group]))
-                : groups[group];
+            const map = groups[group];
             return {
                 ...createTransformers(
                     map,
