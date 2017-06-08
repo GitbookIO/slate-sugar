@@ -480,3 +480,17 @@ test('should work with children omitted', (t) => {
 
     t.is(actual, expected);
 });
+
+test.failing('should work with custom mapper that returns a node', (t) => {
+    let block;
+    h = createHyperscript({
+        code: () => {
+            block = Block.create({ type: 'code' });
+            return block;
+        }
+    });
+    const actual = h('code');
+    const expected = block;
+
+    t.is(actual, expected);
+});
