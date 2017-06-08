@@ -173,6 +173,15 @@ test('should create a text node with more complex marks', (t) => {
     t.is(actual, expected);
 });
 
+test.failing('should create a text node with marks and the provided text', (t) => {
+    const actual = (
+        <text marks={['bold']}>Super bold</text>
+    ).text;
+    const expected = 'Super bold';
+
+    t.is(actual, expected);
+});
+
 test('should throw an error when trying to create a node with unknown kind', (t) => {
     t.throws(() => <test />);
 });
