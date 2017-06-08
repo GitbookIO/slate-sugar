@@ -456,3 +456,27 @@ test('should not normalize state if disabled', (t) => {
 
     t.deepEqual(actual, expected);
 });
+
+test.failing('should work with attributes omitted', (t) => {
+    h = createHyperscript({
+        blocks: {
+            heading: 'heading'
+        }
+    });
+    const actual = h('heading', 'Super heading').text;
+    const expected = 'Super heading';
+
+    t.is(actual, expected);
+});
+
+test('should work with children omitted', (t) => {
+    h = createHyperscript({
+        blocks: {
+            heading: 'heading'
+        }
+    });
+    const actual = h('heading').type;
+    const expected = 'heading';
+
+    t.is(actual, expected);
+});
