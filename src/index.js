@@ -1,7 +1,7 @@
 import { State, Document, Block, Text, Inline, Mark } from 'slate';
 
-function createNode(type, props, children) {
-    const { kind } = props;
+function createNode(props, children) {
+    const { type, kind } = props;
 
     switch (kind) {
     case 'state':
@@ -153,18 +153,15 @@ function createHyperscript(
         children = children.map(child =>
             typeof child === 'object'
                 ? child
-                : createNode(null, { kind: 'text' }, [child])
+                : createNode({ kind: 'text' }, [child])
         );
 
         const mapTagNameToProps = mappers.hasOwnProperty(tagName)
             ? mappers[tagName]
             : mapUnknownToProps;
-        const {
-            type: newType,
-            ...newProps
-        } = mapTagNameToProps(tagName, attributes);
+        const props = mapTagNameToProps(tagName, attributes);
 
-        return createNode(newType, newProps, children);
+        return createNode(props, children);
     };
 }
 
