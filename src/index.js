@@ -38,56 +38,59 @@ function createNode(type, props, children) {
     }
 }
 
-export function defaultTransformer(props) {
-    return props;
+export function defaultTransformer(tagName, attributes) {
+    return {
+        type: tagName,
+        ...attributes
+    };
 }
 
-export function blockTransformer({ type, ...data }) {
+export function blockTransformer(tagName, attributes) {
     return {
-        type,
-        data,
+        type: tagName,
+        data: attributes,
         kind: 'block'
     };
 }
 
-export function inlineTransformer({ type, ...data }) {
+export function inlineTransformer(tagName, attributes) {
     return {
-        type,
-        data,
+        type: tagName,
+        data: attributes,
         kind: 'inline'
     };
 }
 
-export function markTransformer({ type, ...data }) {
+export function markTransformer(tagName, attributes) {
     return {
         kind: 'text',
         marks: [
             {
-                type,
-                data
+                type: tagName,
+                data: attributes
             }
         ]
     };
 }
 
-export function stateTransformer({ type, ...props }) {
+export function stateTransformer(tagName, attributes) {
     return {
         kind: 'state',
-        ...props
+        ...attributes
     };
 }
 
-export function documentTransformer({ type, ...data }) {
+export function documentTransformer(tagName, attributes) {
     return {
         kind: 'document',
-        data
+        data: attributes
     };
 }
 
-export function textTransformer({ type, ...props }) {
+export function textTransformer(tagName, attributes) {
     return {
         kind: 'text',
-        ...props
+        ...attributes
     };
 }
 
@@ -97,10 +100,7 @@ function normalizeName(name) {
 
 function createTransformers(map, transformer) {
     return Object.keys(map).reduce((acc, name) => ({
-        [normalizeName(name)]: ({ type, ...props }) => transformer({
-            type: map[name],
-            ...props
-        }),
+        [normalizeName(name)]: (tagName, attributes) => transformer(map[name], attributes),
         ...acc
     }), {});
 }
@@ -141,20 +141,20 @@ function createHyperscript(
             };
         }, {});
 
-    return (type, props, ...children) => {
+    return (tagName, attributes, ...children) => {
         children = children.map(child =>
             typeof child === 'object'
                 ? child
                 : createNode(null, { kind: 'text' }, [child])
         );
 
-        const transformer = transformers.hasOwnProperty(type)
-            ? transformers[type]
+        const transformer = transformers.hasOwnProperty(tagName)
+            ? transformers[tagName]
             : defaultTransformer;
         const {
             type: newType,
             ...newProps
-        } = transformer({ type, ...props });
+        } = transformer(tagName, attributes);
 
         return createNode(newType, newProps, children);
     };

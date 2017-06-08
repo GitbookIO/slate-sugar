@@ -310,9 +310,9 @@ test('should register a transformer for a group', (t) => {
             img: 'IMG'
         }
     }, {
-        voids: ({ type, ...data }) => ({
-            type,
-            data,
+        voids: (tagName, attributes) => ({
+            type: tagName,
+            data: attributes,
             kind: 'block',
             isVoid: true
         })
