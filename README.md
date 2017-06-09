@@ -18,7 +18,7 @@ yarn add slate-sugar
 
 ## Usage
 
-### Without Defaults
+### Basic
 
 ```jsx harmony
 /* @jsx h */
@@ -38,38 +38,7 @@ const document = (
 );
 ```
 
-### With Defaults
-
-```jsx harmony
-/* @jsx h */
-import createHyperscript from 'slate-sugar';
-
-const h = createHyperscript({
-    blocks: [
-        'heading',
-        'paragraph'
-    ],
-    inlines: [
-        'link'
-    ],
-    marks: [
-        'bold'
-    ]
-});
-const document = (
-    <document>
-        <heading id="introduction">
-            Introduction
-        </heading>
-        <paragraph>
-            This is a super <bold>bold</bold> paragraph.
-            Also, it has a <link href="/">link</link> in it.
-        </paragraph>
-    </document>
-);
-```
-
-The groups (`blocks`, `inlines`, `marks` in this example) can also be a map `<name, type>`:
+### With Mapping
 
 ```jsx harmony
 /* @jsx h */
@@ -77,6 +46,9 @@ import createHyperscript from 'slate-sugar';
 
 const h = createHyperscript({
     blocks: {
+        // the key will be used as the tag name
+        // but the value will still be referenced as the type
+        // it allows you to use keys instead of hard coding the types
         HEADING: 'TYPE_HEADING',
         PARAGRAPH: 'TYPE_PARAGRAPH'
     },
@@ -100,74 +72,20 @@ const document = (
 );
 ```
 
-It behaves the same way than `string[]` except the tag names will be matched against the map's keys.
-It's especially useful if you don't want to use constants' values to create documents.
-
-### With Custom Defaults
-
-```jsx harmony
-/* @jsx h */
-import createHyperscript from 'slate-sugar';
-
-const h = createHyperscript({
-    blocks: [
-        'heading',
-        'paragraph'
-    ],
-    inlines: [
-        'link'
-    ],
-    marks: [
-        'bold'
-    ],
-    voids: [
-        'image'
-    ],
-    doc: () => ({ kind: 'document' })
-}, {
-    voids: ({ type, ...data }) => ({
-        type,
-        kind: 'block',
-        isVoid: true,
-        data
-    })
-});
-const document = (
-    <doc>
-        <heading id="introduction">
-            Introduction
-        </heading>
-        <paragraph>
-            This is a super <bold>bold</bold> paragraph.
-            Also, it has a <link href="/">link</link> in it.
-            <image src="/super-image.png" />
-        </paragraph>
-    </doc>
-);
-```
-
 ## Documentation
 
-### `createHyperscript([groups], [groupsTransformer])`
+### `createHyperscript([groups], [nodeCreators])`
 
-```
-type Transformer = ({ type, ...otherProps }) => Object
-type Group = <name: string, type: string> | string[] | Transformer
-```
-
-* `groups <name: string, Group>`: if `Group` is a `Transformer`, it will be used to generates props for tags with `name`. Otherwise, if it's an object or an array, the `Transformer` is taken from `groupsTransformer`.
-* `groupsTransformer <name: string, Transformer>`: used to transform groups' props matching `name`.
+* `groups?: { [groupName: string]: { [key: string]: string } }`: groups of types in the form of constants.
+* `nodeCreators?: { [tagName: string]: (tagName, attributes, children) => Slate.Node }`: mapping of functions to use to create a Node from a given tag name.
 
 Returns a JSX-compatible function.
 
-The default `Transformer`s are:
+By default, `slate-sugar` is able to create:
 
-* `state`: creates a `Slate.State` with its child `<document />`
-* `document`: creates a `Slate.Document` for `<document />` tags
-* `text`: creates a `Slate.Text` for `<text />` tags and add marks if passed (`<text marks={[...]} />`)
-
-There are also three groups `Transformer`s:
-
-* `blocks`: creates a block with type being the tag name, the rest is considered data.
-* `inlines`: creates an inline with type being the tag name, the rest is considered data.
-* `marks`: creates a text with type being a mark applied to the text, the rest is considered the mark's data.
+* `blocks`: creates a `Slate.BLock` with type being the tag name, the rest is considered data.
+* `inlines`: creates a `Slate.Inline` with type being the tag name, the rest is considered data.
+* `marks`: creates a `Slate.Text` with type being a mark applied to the text, the rest is considered the mark's data.
+* `state`: creates a `Slate.State` (must have a single child of type `Slate.Document`)
+* `document`: creates a `Slate.Document`
+* `text`: creates a `Slate.Text` with marks if passed (`<text marks={[...]} />`)
