@@ -1,6 +1,13 @@
-import createText from './text';
+/* @flow */
 
-function createMark(tagName, attributes, children) {
+import createText from './text';
+import type { Children, Node } from '../types';
+
+function createMark(
+    tagName: string,
+    attributes: Object,
+    children: Children
+): Node {
     const marks = [
         {
             type: tagName,

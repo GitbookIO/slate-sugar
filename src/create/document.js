@@ -1,6 +1,13 @@
-import createUnknown from './unknown';
+/* @flow */
 
-function createDocument(tagName, attributes, children) {
+import createUnknown from './unknown';
+import type { Children, Node } from '../types';
+
+function createDocument(
+    tagName: string,
+    attributes: Object,
+    children: Children
+): Node {
     return createUnknown(tagName, {
         kind: 'document',
         data: attributes

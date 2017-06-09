@@ -1,6 +1,13 @@
-import { State, Document, Block, Inline, Text, Mark } from 'slate';
+/* @flow */
 
-function createUnknown(tagName, { kind, ...attributes }, children) {
+import { State, Document, Block, Inline, Text, Mark } from 'slate';
+import type { Children, Node } from '../types';
+
+function createUnknown(
+    tagName: string,
+    { kind, ...attributes }: Object,
+    children: Children
+): Node {
     switch (kind) {
     case 'state':
         return State.create({

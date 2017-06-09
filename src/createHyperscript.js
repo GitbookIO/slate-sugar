@@ -1,3 +1,5 @@
+/* @flow */
+
 import create, {
     createState,
     createDocument,
@@ -6,42 +8,52 @@ import create, {
     createText,
     createMark
 } from './create';
+import type { Children, Node } from './types';
 
-function getTagName(name) {
+function getTagName(name: string): string {
     return name.toLowerCase().replace(/_/g, '-');
 }
 
-function createTagNameMappers(map, mapTagNameToProps) {
-    return Object.keys(map).reduce((acc, name) => ({
-        [getTagName(name)]: (tagName, attributes, children) => mapTagNameToProps(map[name], attributes, children),
-        ...acc
-    }), {});
+type NodeCreator = (tagName: string, attributes: Object, children: Children) => Node;
+
+function createTagNameMappers(
+    map: { [name: string]: string },
+    createNode: NodeCreator
+): { [tagName: string]: NodeCreator } {
+    return Object
+        .keys(map)
+        .reduce((acc, name) => ({
+            [getTagName(name)]: (tagName, attributes, children) => createNode(map[name], attributes, children),
+            ...acc
+        }), {});
 }
 
-const defaultGroups = {
-    state: createState,
-    document: createDocument,
-    text: createText
-};
-
-const defaultTagNameMappers = {
-    blocks: createBlock,
-    inlines: createInline,
-    marks: createMark
-};
+type Child = string | number | Node;
 
 function createHyperscript(
-    groups = {},
-    tagNameMappers = {}
+    groups: { [groupName: string]: { [name: string]: string } | NodeCreator } = {},
+    creators: { [tagName: string]: NodeCreator } = {}
 ) {
+    const defaultGroups = {
+        state: createState,
+        document: createDocument,
+        text: createText
+    };
     groups = {
         ...defaultGroups,
         ...groups
     };
-    tagNameMappers = {
-        ...defaultTagNameMappers,
-        ...tagNameMappers
+
+    const defaultTagNameMappers = {
+        blocks: createBlock,
+        inlines: createInline,
+        marks: createMark
     };
+    creators = {
+        ...defaultTagNameMappers,
+        ...creators
+    };
+
     const mappers = Object
         .keys(groups)
         .reduce((acc, group) => {
@@ -56,13 +68,13 @@ function createHyperscript(
             return {
                 ...createTagNameMappers(
                     map,
-                    tagNameMappers[group]
+                    creators[group]
                 ),
                 ...acc
             };
         }, {});
 
-    return (tagName, attributes, ...children) => {
+    return (tagName: string, attributes: Object, ...children: Child[]) => {
         if (attributes == null) {
             attributes = {};
         }
