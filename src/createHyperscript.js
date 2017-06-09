@@ -1,5 +1,6 @@
 /* @flow */
 
+import { State, Document, Block, Inline, Text, Mark } from 'slate';
 import create, {
     createState,
     createDocument,
@@ -39,6 +40,19 @@ type Groups = {
     [groupName: string]: TypeMap
 };
 
+function isChild(child: any): boolean {
+    return (
+           typeof child === 'string'
+        || typeof child === 'number'
+        || child instanceof State
+        || child instanceof Document
+        || child instanceof Block
+        || child instanceof Inline
+        || child instanceof Text
+        || child instanceof Mark
+    );
+}
+
 function createHyperscript(
     groups: Groups = {},
     nodeCreators: NodeCreatorMap = {}
@@ -67,10 +81,15 @@ function createHyperscript(
 
     return (
         tagName: string,
-        attributes: Object,
+        attributes?: Object,
         ...children: Children
     ): Node => {
         if (attributes == null) {
+            attributes = {};
+        }
+
+        if (isChild(attributes)) {
+            children = [attributes].concat(children);
             attributes = {};
         }
 

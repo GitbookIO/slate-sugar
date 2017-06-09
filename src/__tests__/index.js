@@ -458,7 +458,7 @@ test('should not normalize state if disabled', (t) => {
     t.deepEqual(actual, expected);
 });
 
-test.failing('should work with attributes omitted', (t) => {
+test('should work with attributes omitted', (t) => {
     h = createHyperscript({
         blocks: {
             heading: 'heading'
