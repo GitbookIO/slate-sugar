@@ -1,7 +1,7 @@
 /* @flow */
 
 import { Mark } from 'slate';
-import createUnknown from './unknown';
+import create from './unknown';
 import type { Children, Node } from '../types';
 
 function createText(
@@ -14,7 +14,7 @@ function createText(
             ? ({ type: mark })
             : mark
     ));
-    return createUnknown(tagName, {
+    return create(tagName, {
         kind: 'text',
         marks
     }, children);

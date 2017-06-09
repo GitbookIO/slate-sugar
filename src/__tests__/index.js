@@ -3,7 +3,7 @@
 import test from 'ava';
 import { Raw, State, Document, Block, Text, Inline } from 'slate';
 import createHyperscript from '../';
-import createUnknown from '../create/unknown';
+import create from '../create';
 
 let h;
 test.beforeEach(() => {
@@ -297,7 +297,7 @@ test('should add data to registered marks', (t) => {
 
 test('should rename document', (t) => {
     h = createHyperscript({}, {
-        doc: () => createUnknown('document', { kind: 'document' }, [])
+        doc: () => create('document', { kind: 'document' }, [])
     });
     const actual = <doc /> instanceof Document;
     const expected = true;

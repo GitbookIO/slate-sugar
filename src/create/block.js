@@ -1,6 +1,6 @@
 /* @flow */
 
-import createUnknown from './unknown';
+import create from './unknown';
 import type { Children, Node } from '../types';
 
 function createBlock(
@@ -8,7 +8,7 @@ function createBlock(
     attributes: Object,
     children: Children
 ): Node {
-    return createUnknown(tagName, {
+    return create(tagName, {
         kind: 'block',
         data: attributes
     }, children);
