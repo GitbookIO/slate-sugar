@@ -470,6 +470,36 @@ test('should work with attributes omitted', (t) => {
     t.is(actual, expected);
 });
 
+test('should work with an array of children', (t) => {
+    h = createHyperscript({
+        blocks: {
+            section: 'section',
+            paragraph: 'paragraph'
+        }
+    });
+    const actual = h('section', null, [
+        h('paragraph', 'Super paragraph')
+    ]).nodes.size;
+    const expected = 1;
+
+    t.is(actual, expected);
+});
+
+test('should work with an array of children when attributes is omitted', (t) => {
+    h = createHyperscript({
+        blocks: {
+            section: 'section',
+            paragraph: 'paragraph'
+        }
+    });
+    const actual = h('section', [
+        h('paragraph', 'Super paragraph')
+    ]).nodes.size;
+    const expected = 1;
+
+    t.is(actual, expected);
+});
+
 test('should work with children omitted', (t) => {
     h = createHyperscript({
         blocks: {

@@ -44,6 +44,7 @@ function isChild(child: any): boolean {
     return (
            typeof child === 'string'
         || typeof child === 'number'
+        || Array.isArray(child)
         || child instanceof State
         || child instanceof Document
         || child instanceof Block
@@ -92,6 +93,9 @@ function createHyperscript(
             children = [attributes].concat(children);
             attributes = {};
         }
+
+        // flatten children to allow passing them as an array
+        children = children.reduce((acc, child) => acc.concat(child), []);
 
         const createNode =
             nodeCreators.hasOwnProperty(tagName)
