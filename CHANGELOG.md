@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.4.0](https://github.com/GitbookIO/slate-sugar/compare/0.3.0...0.4.0) - Unreleased
+
+- Fix `<text />` creation when children is already a text node
+- Removed support for list of strings in `groups`, now it must be `{ [groupName]: { [tagName]: type } }`
+- Change custom node creators to return a `Slate.Node`
+    - Also, their signature changed to `(tagName: string, attributes: Object, children: [string | number | Slate.Node]) => Slate.Node`
+- Change custom node creators to be the second arguments, you can't mix groups and node creators anymore
+- Add support for calls to `createHyperscript()` without the `attributes` argument
+- Add support for children as an array
+
 ## [0.3.0](https://github.com/GitbookIO/slate-sugar/compare/0.2.0...0.3.0) - 2017-06-07
 
 - Add `<state>` to create a `Slate.State` with its child `<document />`
