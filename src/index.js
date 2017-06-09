@@ -1,98 +1,4 @@
-import { State, Document, Block, Text, Inline, Mark } from 'slate';
-
-function createNode(props, children) {
-    const { type, kind } = props;
-
-    switch (kind) {
-    case 'state':
-        return State.create({
-            document: children[0]
-        }, props);
-    case 'document':
-        return Document.create({
-            nodes: children
-        });
-    case 'text': {
-        const text = String(children.join(''));
-        const marks = Mark.createSet((props.marks || []).map(mark =>
-            typeof mark === 'string'
-                ? ({ type: mark })
-                : mark
-        ));
-        return Text.createFromString(text, marks);
-    }
-    case 'inline':
-        return Inline.create({
-            type,
-            nodes: children,
-            ...props
-        });
-    case 'block':
-        return Block.create({
-            type,
-            nodes: children,
-            ...props
-        });
-    default:
-        throw new Error(`Cannot create Node of unknown kind ${kind}`);
-    }
-}
-
-export function mapUnknownToProps(tagName, attributes) {
-    return {
-        type: tagName,
-        ...attributes
-    };
-}
-
-export function mapBlockToProps(tagName, attributes) {
-    return {
-        type: tagName,
-        data: attributes,
-        kind: 'block'
-    };
-}
-
-export function mapInlineToProps(tagName, attributes) {
-    return {
-        type: tagName,
-        data: attributes,
-        kind: 'inline'
-    };
-}
-
-export function mapMarkToProps(tagName, attributes) {
-    return {
-        kind: 'text',
-        marks: [
-            {
-                type: tagName,
-                data: attributes
-            }
-        ]
-    };
-}
-
-export function mapStateToProps(tagName, attributes) {
-    return {
-        kind: 'state',
-        ...attributes
-    };
-}
-
-export function mapDocumentToProps(tagName, attributes) {
-    return {
-        kind: 'document',
-        data: attributes
-    };
-}
-
-export function mapTextToProps(tagName, attributes) {
-    return {
-        kind: 'text',
-        ...attributes
-    };
-}
+import create, { state, document, block, inline, text, mark } from './create';
 
 function getTagName(name) {
     return name.toLowerCase().replace(/_/g, '-');
@@ -100,21 +6,21 @@ function getTagName(name) {
 
 function createTagNameMappers(map, mapTagNameToProps) {
     return Object.keys(map).reduce((acc, name) => ({
-        [getTagName(name)]: (tagName, attributes) => mapTagNameToProps(map[name], attributes),
+        [getTagName(name)]: (tagName, attributes, children) => mapTagNameToProps(map[name], attributes, children),
         ...acc
     }), {});
 }
 
 const defaultGroups = {
-    state: mapStateToProps,
-    document: mapDocumentToProps,
-    text: mapTextToProps
+    state,
+    document,
+    text
 };
 
 const defaultTagNameMappers = {
-    blocks: mapBlockToProps,
-    inlines: mapInlineToProps,
-    marks: mapMarkToProps
+    blocks: block,
+    inlines: inline,
+    marks: mark
 };
 
 function createHyperscript(
@@ -150,18 +56,21 @@ function createHyperscript(
         }, {});
 
     return (tagName, attributes, ...children) => {
+        if (attributes == null) {
+            attributes = {};
+        }
+
         children = children.map(child =>
             typeof child === 'object'
                 ? child
-                : createNode({ kind: 'text' }, [child])
+                : text('text', {}, [child])
         );
 
         const mapTagNameToProps = mappers.hasOwnProperty(tagName)
             ? mappers[tagName]
-            : mapUnknownToProps;
-        const props = mapTagNameToProps(tagName, attributes);
+            : create;
 
-        return createNode(props, children);
+        return mapTagNameToProps(tagName, attributes, children);
     };
 }
 

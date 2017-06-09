@@ -3,6 +3,7 @@
 import test from 'ava';
 import { Raw, State, Document, Block, Text, Inline } from 'slate';
 import createHyperscript from '../';
+import createUnknown from '../create/unknown';
 
 let h;
 test.beforeEach(() => {
@@ -296,7 +297,7 @@ test('should add data to registered marks', (t) => {
 
 test('should rename document', (t) => {
     h = createHyperscript({
-        doc: () => ({ kind: 'document' })
+        doc: () => createUnknown('document', { kind: 'document' }, [])
     });
     const actual = <doc /> instanceof Document;
     const expected = true;
@@ -481,7 +482,7 @@ test('should work with children omitted', (t) => {
     t.is(actual, expected);
 });
 
-test.failing('should work with custom mapper that returns a node', (t) => {
+test('should work with custom mapper that returns a node', (t) => {
     let block;
     h = createHyperscript({
         code: () => {
