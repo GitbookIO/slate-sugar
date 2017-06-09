@@ -15,12 +15,14 @@ function getTagName(name: string): string {
 }
 
 type NodeCreator = (tagName: string, attributes: Object, children: Children) => Node;
+type TypeMap = { [name: string]: string };
+type NodeCreatorMap = { [tagName: string]: NodeCreator };
 
 function addNodeCreators(
-    typeMap: { [name: string]: string },
+    typeMap: TypeMap,
     createNode: NodeCreator,
     initialValue: Object
-): { [tagName: string]: NodeCreator } {
+): NodeCreatorMap {
     return Object
         .keys(typeMap)
         .reduce((acc, key) => {
@@ -33,9 +35,13 @@ function addNodeCreators(
         }, initialValue);
 }
 
+type Groups = {
+    [groupName: string]: TypeMap
+};
+
 function createHyperscript(
-    groups: { [groupName: string]: { [name: string]: string } | NodeCreator } = {},
-    nodeCreators: { [tagName: string]: NodeCreator } = {}
+    groups: Groups = {},
+    nodeCreators: NodeCreatorMap = {}
 ) {
     const defaultNodeCreators = {
         state: createState,
