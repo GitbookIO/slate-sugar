@@ -495,3 +495,17 @@ test('should work with custom mapper that returns a node', (t) => {
 
     t.is(actual, expected);
 });
+
+test('should give precedence to custom node creators', (t) => {
+    h = createHyperscript({
+        inlines: {
+            code: 'code'
+        }
+    }, {
+        code: () => Block.create({ type: 'code' })
+    });
+    const actual = <code /> instanceof Block;
+    const expected = true;
+
+    t.is(actual, expected);
+});
