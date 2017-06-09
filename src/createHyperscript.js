@@ -16,72 +16,64 @@ function getTagName(name: string): string {
 
 type NodeCreator = (tagName: string, attributes: Object, children: Children) => Node;
 
-function createTagNameMappers(
-    map: { [name: string]: string },
-    createNode: NodeCreator
+function addNodeCreators(
+    typeMap: { [name: string]: string },
+    createNode: NodeCreator,
+    initialValue: Object
 ): { [tagName: string]: NodeCreator } {
     return Object
-        .keys(map)
-        .reduce((acc, name) => ({
-            [getTagName(name)]: (tagName, attributes, children) => createNode(map[name], attributes, children),
-            ...acc
-        }), {});
+        .keys(typeMap)
+        .reduce((acc, key) => {
+            const tagName = getTagName(key);
+            const type = typeMap[key];
+            return {
+                [tagName]: (_, ...args) => createNode(type, ...args),
+                ...acc
+            };
+        }, initialValue);
 }
 
 function createHyperscript(
     groups: { [groupName: string]: { [name: string]: string } | NodeCreator } = {},
-    creators: { [tagName: string]: NodeCreator } = {}
+    nodeCreators: { [tagName: string]: NodeCreator } = {}
 ) {
-    const defaultGroups = {
+    const defaultNodeCreators = {
         state: createState,
         document: createDocument,
-        text: createText
-    };
-    groups = {
-        ...defaultGroups,
-        ...groups
-    };
-
-    const defaultTagNameMappers = {
+        text: createText,
         blocks: createBlock,
         inlines: createInline,
         marks: createMark
     };
-    creators = {
-        ...defaultTagNameMappers,
-        ...creators
+    nodeCreators = {
+        ...defaultNodeCreators,
+        ...nodeCreators
     };
 
-    const mappers = Object
+    // add a node creator for each items in the groups
+    nodeCreators = Object
         .keys(groups)
-        .reduce((acc, group) => {
-            if (typeof groups[group] === 'function') {
-                return {
-                    [group]: groups[group],
-                    ...acc
-                };
-            }
+        .reduce((acc, group) => addNodeCreators(
+            groups[group],
+            acc[group],
+            acc
+        ), nodeCreators);
 
-            const map = groups[group];
-            return {
-                ...createTagNameMappers(
-                    map,
-                    creators[group]
-                ),
-                ...acc
-            };
-        }, {});
-
-    return (tagName: string, attributes: Object, ...children: Children) => {
+    return (
+        tagName: string,
+        attributes: Object,
+        ...children: Children
+    ): Node => {
         if (attributes == null) {
             attributes = {};
         }
 
-        const mapTagNameToProps = mappers.hasOwnProperty(tagName)
-            ? mappers[tagName]
-            : create;
+        const createNode =
+            nodeCreators.hasOwnProperty(tagName)
+                ? nodeCreators[tagName]
+                : create;
 
-        return mapTagNameToProps(tagName, attributes, children);
+        return createNode(tagName, attributes, children);
     };
 }
 

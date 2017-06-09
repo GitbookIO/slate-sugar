@@ -296,7 +296,7 @@ test('should add data to registered marks', (t) => {
 });
 
 test('should rename document', (t) => {
-    h = createHyperscript({
+    h = createHyperscript({}, {
         doc: () => createUnknown('document', { kind: 'document' }, [])
     });
     const actual = <doc /> instanceof Document;
@@ -484,7 +484,7 @@ test('should work with children omitted', (t) => {
 
 test('should work with custom mapper that returns a node', (t) => {
     let block;
-    h = createHyperscript({
+    h = createHyperscript({}, {
         code: () => {
             block = Block.create({ type: 'code' });
             return block;
