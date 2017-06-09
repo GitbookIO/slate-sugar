@@ -174,7 +174,7 @@ test('should create a text node with more complex marks', (t) => {
     t.is(actual, expected);
 });
 
-test.failing('should create a text node with marks and the provided text', (t) => {
+test('should create a text node with marks and the provided text', (t) => {
     const actual = (
         <text marks={['bold']}>Super bold</text>
     ).text;

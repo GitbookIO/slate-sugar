@@ -6,7 +6,7 @@ import type { Children, Node } from '../types';
 
 function createText(
     tagName: string,
-    { marks = [] }: { marks: { type: string, data: Object }[] },
+    { marks = [] }: { marks?: { type: string, data: Object }[] },
     children: Children
 ): Node {
     marks = Mark.createSet(marks.map(mark =>

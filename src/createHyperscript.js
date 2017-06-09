@@ -28,8 +28,6 @@ function createTagNameMappers(
         }), {});
 }
 
-type Child = string | number | Node;
-
 function createHyperscript(
     groups: { [groupName: string]: { [name: string]: string } | NodeCreator } = {},
     creators: { [tagName: string]: NodeCreator } = {}
@@ -74,16 +72,10 @@ function createHyperscript(
             };
         }, {});
 
-    return (tagName: string, attributes: Object, ...children: Child[]) => {
+    return (tagName: string, attributes: Object, ...children: Children) => {
         if (attributes == null) {
             attributes = {};
         }
-
-        children = children.map(child =>
-            typeof child === 'object'
-                ? child
-                : createText('text', {}, [child])
-        );
 
         const mapTagNameToProps = mappers.hasOwnProperty(tagName)
             ? mappers[tagName]
