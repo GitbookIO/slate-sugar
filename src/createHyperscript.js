@@ -1,6 +1,13 @@
 /* @flow */
 
-import { State, Document, Block, Inline, Text, Mark } from 'slate';
+import {
+    State,
+    Document,
+    Block,
+    Inline,
+    Text,
+    Mark
+} from 'slate';
 import create, {
     createState,
     createDocument,
@@ -9,15 +16,19 @@ import create, {
     createText,
     createMark
 } from './create';
-import type { Children, Node } from './types';
-
-function getTagName(name: string): string {
-    return name.toLowerCase().replace(/_/g, '-');
-}
+import type {
+    Children,
+    Node
+} from './types';
 
 type NodeCreator = (tagName: string, attributes: Object, children: Children) => Node;
 type TypeMap = { [name: string]: string };
 type NodeCreatorMap = { [tagName: string]: NodeCreator };
+type Groups = { [groupName: string]: TypeMap };
+
+function getTagName(name: string): string {
+    return name.toLowerCase().replace(/_/g, '-');
+}
 
 function addNodeCreators(
     typeMap: TypeMap,
@@ -35,10 +46,6 @@ function addNodeCreators(
             };
         }, initialValue);
 }
-
-type Groups = {
-    [groupName: string]: TypeMap
-};
 
 function isChild(child: any): boolean {
     return (
