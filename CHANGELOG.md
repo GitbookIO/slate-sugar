@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.5.0](https://github.com/GitbookIO/slate-sugar/compare/0.4.0...0.5.0) - 2017-06-20
+
+- Remove groups keys normalization
+
 ## [0.4.0](https://github.com/GitbookIO/slate-sugar/compare/0.3.0...0.4.0) - 2017-06-09
 
 - Fix `<text />` creation when children is already a text node
