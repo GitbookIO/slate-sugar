@@ -211,18 +211,6 @@ test('should set type accordingly', (t) => {
     t.is(actual, expected);
 });
 
-test('should normalize the name', (t) => {
-    h = createHyperscript({
-        blocks: {
-            HEADING_1: 'HEADING_1'
-        }
-    });
-    const actual = (<heading-1 />).type;
-    const expected = 'HEADING_1';
-
-    t.is(actual, expected);
-});
-
 test('should not lose block\'s data', (t) => {
     h = createHyperscript({
         blocks: {

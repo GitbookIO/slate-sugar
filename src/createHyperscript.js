@@ -26,10 +26,6 @@ type TypeMap = { [name: string]: string };
 type NodeCreatorMap = { [tagName: string]: NodeCreator };
 type Groups = { [groupName: string]: TypeMap };
 
-function getTagName(name: string): string {
-    return name.toLowerCase().replace(/_/g, '-');
-}
-
 function addNodeCreators(
     typeMap: TypeMap,
     createNode: NodeCreator,
@@ -38,7 +34,7 @@ function addNodeCreators(
     return Object
         .keys(typeMap)
         .reduce((acc, key) => {
-            const tagName = getTagName(key);
+            const tagName = key;
             const type = typeMap[key];
             return {
                 [tagName]: (_, ...args) => createNode(type, ...args),
