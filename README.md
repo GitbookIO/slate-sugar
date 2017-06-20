@@ -20,6 +20,8 @@ yarn add slate-sugar
 
 ### Basic
 
+This is the quickest way to use `slate-sugar`. If you need a terser syntax, you should [declare a type mapping beforehand](#with-mapping).
+
 ```jsx harmony
 /* @jsx h */
 import createHyperscript from 'slate-sugar';
@@ -40,23 +42,24 @@ const document = (
 
 ### With Mapping
 
+Here is the recommended way to use `slate-sugar`, leading to the leanest code. The only difference is that you declare your blocks, inlines and marks types ahead of time.
+
 ```jsx harmony
 /* @jsx h */
 import createHyperscript from 'slate-sugar';
 
 const h = createHyperscript({
     blocks: {
-        // the key will be used as the tag name
-        // but the value will still be referenced as the type
-        // it allows you to use keys instead of hard coding the types
-        HEADING: 'TYPE_HEADING',
-        PARAGRAPH: 'TYPE_PARAGRAPH'
+        // Keys here can then be used as tag name.
+        // They will be recognized as blocks, and will be assigned the correct type.
+        heading: 'TYPE_HEADING',
+        paragraph: 'TYPE_PARAGRAPH'
     },
     inlines: {
-        LINK: 'TYPE_LINK'
+        link: 'TYPE_LINK'
     },
     marks: {
-        BOLD: 'TYPE_BOLD'
+        bold: 'TYPE_BOLD'
     }
 });
 const document = (
