@@ -14,9 +14,11 @@ function createTextNodes(children: Children): Node[] {
 
 function createUnknown(
     tagName: string,
-    { kind, ...attributes }: Object,
+    attributes: Object,
     children: Children
 ): Node {
+    const { kind, key, ...otherAttributes } = attributes;
+
     switch (kind) {
     case 'state':
         return State.create({
@@ -30,20 +32,23 @@ function createUnknown(
     case 'block':
         return Block.create({
             type: tagName,
+            key,
             nodes: createTextNodes(children),
-            ...attributes
+            ...otherAttributes
         });
     case 'inline':
         return Inline.create({
             type: tagName,
+            key,
             nodes: createTextNodes(children),
-            ...attributes
+            ...otherAttributes
         });
     case 'text': {
         const {
             marks = Mark.createSet([])
         } = attributes;
-        return Text.createFromString(children.join(''), marks);
+        const text = Text.createFromString(children.join(''), marks);
+        return text.set('key', key || text.key);
     }
     default:
         throw new Error(`Cannot create Node of unknown kind ${kind}`);

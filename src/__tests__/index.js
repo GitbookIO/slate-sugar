@@ -17,9 +17,33 @@ test('should create a document', (t) => {
     t.is(actual, expected);
 });
 
+test('should create a document with a key', (t) => {
+    const actual = (<document key="key" />).key;
+    const expected = 'key';
+
+    t.is(actual, expected);
+});
+
+test('should create a document with data', (t) => {
+    const actual = (<document key="key" data1="1" data2="2"/>).data.toJS();
+    const expected = {
+        data1: '1',
+        data2: '2'
+    };
+
+    t.deepEqual(actual, expected);
+});
+
 test('should create a block', (t) => {
     const actual = <paragraph kind="block" /> instanceof Block;
     const expected = true;
+
+    t.is(actual, expected);
+});
+
+test('should create a block with a key', (t) => {
+    const actual = (<paragraph kind="block" key="key" />).key;
+    const expected = 'key';
 
     t.is(actual, expected);
 });
@@ -104,6 +128,13 @@ test('should create an inline', (t) => {
     t.is(actual, expected);
 });
 
+test('should create an inline with a key', (t) => {
+    const actual = (<link kind="inline" key="key" />).key;
+    const expected = 'key';
+
+    t.is(actual, expected);
+});
+
 test('should create an inline with provided type', (t) => {
     const actual = (<link kind="inline" />).type;
     const expected = 'link';
@@ -135,6 +166,20 @@ test('should create an inline with a child', (t) => {
 test('should create a text node', (t) => {
     const actual = <text /> instanceof Text;
     const expected = true;
+
+    t.is(actual, expected);
+});
+
+test('should create a text node with a key #1', (t) => {
+    const actual = (<anything kind="text" key="key">Some text</anything>).key;
+    const expected = 'key';
+
+    t.is(actual, expected);
+});
+
+test('should create a text node with a key #2', (t) => {
+    const actual = (<text key="key">Some text</text>).key;
+    const expected = 'key';
 
     t.is(actual, expected);
 });
