@@ -8,9 +8,12 @@ function createBlock(
     attributes: Object,
     children: Children
 ): Node {
+    const { key, ...data } = attributes;
+
     return create(tagName, {
         kind: 'block',
-        data: attributes
+        key,
+        data
     }, children);
 }
 

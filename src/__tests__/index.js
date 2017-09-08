@@ -572,3 +572,27 @@ test('should give precedence to custom node creators', (t) => {
 
     t.is(actual, expected);
 });
+
+test('should allow keys when pre-declaring blocks', (t) => {
+    h = createHyperscript({
+        blocks: {
+            paragraph: 'paragraph'
+        }
+    });
+    const actual = (<paragraph key="key"/>).key;
+    const expected = 'key';
+
+    t.is(actual, expected);
+});
+
+test('should allow keys when pre-declaring inlines', (t) => {
+    h = createHyperscript({
+        inlines: {
+            code: 'code'
+        }
+    });
+    const actual = (<code key="key"></code>).key;
+    const expected = 'key';
+
+    t.is(actual, expected);
+});

@@ -5,14 +5,14 @@ import type { Children, Node } from '../types';
 
 function createDocument(
     tagName: string,
-    { key, ...otherAttributes }: Object,
+    { key, ...data }: Object,
     children: Children
 ): Node {
 
     return create(tagName, {
         kind: 'document',
         key,
-        data: otherAttributes
+        data
     }, children);
 }
 

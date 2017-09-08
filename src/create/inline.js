@@ -8,9 +8,11 @@ function createInline(
     attributes: Object,
     children: Children
 ): Node {
+    const { key, ...data } = attributes;
     return create(tagName, {
         kind: 'inline',
-        data: attributes
+        key,
+        data
     }, children);
 }
 
