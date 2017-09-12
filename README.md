@@ -10,6 +10,10 @@ The purpose of slate-sugar is to make Slate nodes and documents creation:
 * Painless by using smart defaults and inferring properties based on the input
 * Comprehensible by offering a declarative way to create structured documents
 
+# [DEPRECATION WARNING]
+
+This package is being deprecated, in favor of the official [`slate-hyperscript`](https://github.com/ianstormtaylor/slate/tree/master/packages/slate-hyperscript). Both packages fulfill the same role, but `slate-hyperscript` will be maintained along with `slate` and has already more features (support for `<cursor/>` and `<anchor/><focus/>`).
+
 ## Install
 
 ```
